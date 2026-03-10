@@ -1,0 +1,419 @@
+[2026-03-06 15:50:17,311] INFO news: Starting fetch cycle for 16 active sources
+[2026-03-06 15:50:17,316] INFO news: Scraping website: Certik (https://www.certik.com/blog/reports)
+[2026-03-06 15:50:18,851] ERROR news: Failed to fetch https://www.certik.com/blog/reports: Client error '403 Forbidden' for url 'https://www.certik.com/blog/reports'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+[2026-03-06 15:50:18,852] INFO news: Fetched 0 new articles from 'Certik'
+[2026-03-06 15:50:18,853] INFO news: Twitter scraping for 'SEC.gov' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,868] INFO news: Fetched 0 new articles from 'SEC.gov'
+[2026-03-06 15:50:18,869] INFO news: Twitter scraping for 'Willy Woo' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,875] INFO news: Fetched 0 new articles from 'Willy Woo'
+[2026-03-06 15:50:18,876] INFO news: Twitter scraping for 'CryptooIndia' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,885] INFO news: Fetched 0 new articles from 'CryptooIndia'
+[2026-03-06 15:50:18,885] INFO news: Twitter scraping for 'smtgpt' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,893] INFO news: Fetched 0 new articles from 'smtgpt'
+[2026-03-06 15:50:18,893] INFO news: Twitter scraping for 'EleanorTerrett' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,904] INFO news: Fetched 0 new articles from 'EleanorTerrett'
+[2026-03-06 15:50:18,904] INFO news: Twitter scraping for 'Young_Ju' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,912] INFO news: Fetched 0 new articles from 'Young_Ju'
+[2026-03-06 15:50:18,913] INFO news: Twitter scraping for 'SBF_FTX' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,922] INFO news: Fetched 0 new articles from 'SBF_FTX'
+[2026-03-06 15:50:18,927] INFO news: Twitter scraping for 'NischalShetty' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,934] INFO news: Fetched 0 new articles from 'NischalShetty'
+[2026-03-06 15:50:18,935] INFO news: Twitter scraping for 'DefiLama' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,946] INFO news: Fetched 0 new articles from 'DefiLama'
+[2026-03-06 15:50:18,947] INFO news: Twitter scraping for 'CryptoHyes' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,971] INFO news: Fetched 0 new articles from 'CryptoHyes'
+[2026-03-06 15:50:18,972] INFO news: Twitter scraping for 'WuBlockChain' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:18,986] INFO news: Fetched 0 new articles from 'WuBlockChain'
+[2026-03-06 15:50:18,987] INFO news: Scraping website: BloomBerg (https://www.bloomberg.com/crypto)
+[2026-03-06 15:50:19,727] ERROR news: Failed to fetch https://www.bloomberg.com/crypto: Client error '403 Forbidden' for url 'https://www.bloomberg.com/crypto'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+[2026-03-06 15:50:19,728] INFO news: Fetched 0 new articles from 'BloomBerg'
+[2026-03-06 15:50:19,735] INFO news: Twitter scraping for 'CryptoTimes' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:19,748] INFO news: Fetched 0 new articles from 'CryptoTimes'
+[2026-03-06 15:50:19,750] INFO news: Twitter scraping for 'LookOnChain' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 15:50:19,758] INFO news: Fetched 0 new articles from 'LookOnChain'
+[2026-03-06 15:50:19,759] INFO news: Scraping website: Demo Source (https://demo.cryptotimes.dev)
+[2026-03-06 15:50:20,197] ERROR news: Failed to fetch https://demo.cryptotimes.dev: [Errno 11001] getaddrinfo failed
+[2026-03-06 15:50:20,199] INFO news: Fetched 0 new articles from 'Demo Source'
+[2026-03-06 15:50:20,200] INFO news: Fetch cycle complete: 0 new articles total
+[2026-03-06 17:58:59,312] INFO news: Starting fetch cycle for 16 active sources
+[2026-03-06 17:58:59,315] INFO news: Scraping website: Certik (https://www.certik.com/blog/reports)
+[2026-03-06 17:59:00,768] ERROR news: Failed to fetch https://www.certik.com/blog/reports: Client error '403 Forbidden' for url 'https://www.certik.com/blog/reports'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+[2026-03-06 17:59:00,770] INFO news: Fetched 0 new articles from 'Certik'
+[2026-03-06 17:59:00,771] INFO news: Twitter scraping for 'SEC.gov' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,789] INFO news: Fetched 0 new articles from 'SEC.gov'
+[2026-03-06 17:59:00,790] INFO news: Twitter scraping for 'Willy Woo' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,803] INFO news: Fetched 0 new articles from 'Willy Woo'
+[2026-03-06 17:59:00,804] INFO news: Twitter scraping for 'CryptooIndia' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,821] INFO news: Fetched 0 new articles from 'CryptooIndia'
+[2026-03-06 17:59:00,822] INFO news: Twitter scraping for 'smtgpt' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,846] INFO news: Fetched 0 new articles from 'smtgpt'
+[2026-03-06 17:59:00,846] INFO news: Twitter scraping for 'EleanorTerrett' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,858] INFO news: Fetched 0 new articles from 'EleanorTerrett'
+[2026-03-06 17:59:00,859] INFO news: Twitter scraping for 'Young_Ju' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,873] INFO news: Fetched 0 new articles from 'Young_Ju'
+[2026-03-06 17:59:00,874] INFO news: Twitter scraping for 'SBF_FTX' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,888] INFO news: Fetched 0 new articles from 'SBF_FTX'
+[2026-03-06 17:59:00,889] INFO news: Twitter scraping for 'NischalShetty' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,904] INFO news: Fetched 0 new articles from 'NischalShetty'
+[2026-03-06 17:59:00,905] INFO news: Twitter scraping for 'DefiLama' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,919] INFO news: Fetched 0 new articles from 'DefiLama'
+[2026-03-06 17:59:00,921] INFO news: Twitter scraping for 'CryptoHyes' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,930] INFO news: Fetched 0 new articles from 'CryptoHyes'
+[2026-03-06 17:59:00,931] INFO news: Twitter scraping for 'WuBlockChain' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:00,946] INFO news: Fetched 0 new articles from 'WuBlockChain'
+[2026-03-06 17:59:00,946] INFO news: Scraping website: BloomBerg (https://www.bloomberg.com/crypto)
+[2026-03-06 17:59:01,722] ERROR news: Failed to fetch https://www.bloomberg.com/crypto: Client error '403 Forbidden' for url 'https://www.bloomberg.com/crypto'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+[2026-03-06 17:59:01,737] INFO news: Fetched 0 new articles from 'BloomBerg'
+[2026-03-06 17:59:01,739] INFO news: Twitter scraping for 'CryptoTimes' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:01,796] INFO news: Fetched 0 new articles from 'CryptoTimes'
+[2026-03-06 17:59:01,797] INFO news: Twitter scraping for 'LookOnChain' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 17:59:01,826] INFO news: Fetched 0 new articles from 'LookOnChain'
+[2026-03-06 17:59:01,826] INFO news: Scraping website: Demo Source (https://demo.cryptotimes.dev)
+[2026-03-06 17:59:02,532] ERROR news: Failed to fetch https://demo.cryptotimes.dev: [Errno 11001] getaddrinfo failed
+[2026-03-06 17:59:02,537] INFO news: Fetched 0 new articles from 'Demo Source'
+[2026-03-06 17:59:02,538] INFO news: Fetch cycle complete: 0 new articles total
+[2026-03-06 18:34:47,490] INFO news: Starting fetch cycle for 16 active sources
+[2026-03-06 18:34:47,493] INFO news: Scraping website: Certik (https://www.certik.com/blog/reports)
+[2026-03-06 18:34:48,467] ERROR news: Failed to fetch https://www.certik.com/blog/reports: Client error '403 Forbidden' for url 'https://www.certik.com/blog/reports'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+[2026-03-06 18:34:48,468] INFO news: Fetched 0 new articles from 'Certik'
+[2026-03-06 18:34:48,470] INFO news: Twitter scraping for 'SEC.gov' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,489] INFO news: Fetched 0 new articles from 'SEC.gov'
+[2026-03-06 18:34:48,490] INFO news: Twitter scraping for 'Willy Woo' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,504] INFO news: Fetched 0 new articles from 'Willy Woo'
+[2026-03-06 18:34:48,505] INFO news: Twitter scraping for 'CryptooIndia' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,519] INFO news: Fetched 0 new articles from 'CryptooIndia'
+[2026-03-06 18:34:48,520] INFO news: Twitter scraping for 'smtgpt' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,529] INFO news: Fetched 0 new articles from 'smtgpt'
+[2026-03-06 18:34:48,530] INFO news: Twitter scraping for 'EleanorTerrett' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,539] INFO news: Fetched 0 new articles from 'EleanorTerrett'
+[2026-03-06 18:34:48,539] INFO news: Twitter scraping for 'Young_Ju' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,549] INFO news: Fetched 0 new articles from 'Young_Ju'
+[2026-03-06 18:34:48,549] INFO news: Twitter scraping for 'SBF_FTX' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,558] INFO news: Fetched 0 new articles from 'SBF_FTX'
+[2026-03-06 18:34:48,559] INFO news: Twitter scraping for 'NischalShetty' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,570] INFO news: Fetched 0 new articles from 'NischalShetty'
+[2026-03-06 18:34:48,571] INFO news: Twitter scraping for 'DefiLama' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,579] INFO news: Fetched 0 new articles from 'DefiLama'
+[2026-03-06 18:34:48,579] INFO news: Twitter scraping for 'CryptoHyes' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,593] INFO news: Fetched 0 new articles from 'CryptoHyes'
+[2026-03-06 18:34:48,594] INFO news: Twitter scraping for 'WuBlockChain' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:48,607] INFO news: Fetched 0 new articles from 'WuBlockChain'
+[2026-03-06 18:34:48,609] INFO news: Scraping website: BloomBerg (https://www.bloomberg.com/crypto)
+[2026-03-06 18:34:49,349] ERROR news: Failed to fetch https://www.bloomberg.com/crypto: Client error '403 Forbidden' for url 'https://www.bloomberg.com/crypto'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+[2026-03-06 18:34:49,350] INFO news: Fetched 0 new articles from 'BloomBerg'
+[2026-03-06 18:34:49,358] INFO news: Twitter scraping for 'CryptoTimes' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:49,378] INFO news: Fetched 0 new articles from 'CryptoTimes'
+[2026-03-06 18:34:49,379] INFO news: Twitter scraping for 'LookOnChain' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-06 18:34:49,394] INFO news: Fetched 0 new articles from 'LookOnChain'
+[2026-03-06 18:34:49,395] INFO news: Scraping website: Demo Source (https://demo.cryptotimes.dev)
+[2026-03-06 18:34:49,858] ERROR news: Failed to fetch https://demo.cryptotimes.dev: [Errno 11001] getaddrinfo failed
+[2026-03-06 18:34:49,860] INFO news: Fetched 0 new articles from 'Demo Source'
+[2026-03-06 18:34:49,862] INFO news: Fetch cycle complete: 0 new articles total
+[2026-03-10 11:56:34,333] INFO news: Starting fetch cycle for 1 active sources
+[2026-03-10 11:56:34,335] INFO news: Scraping website: Demo Source (https://demo.cryptotimes.dev)
+[2026-03-10 11:56:34,730] ERROR news: Failed to fetch https://demo.cryptotimes.dev: [Errno 11001] getaddrinfo failed
+[2026-03-10 11:56:34,731] INFO news: Fetched 0 new articles from 'Demo Source'
+[2026-03-10 11:56:34,732] INFO news: Fetch cycle complete: 0 new articles total
+[2026-03-10 11:59:30,658] INFO news: Starting fetch cycle for 8 active sources
+[2026-03-10 11:59:30,660] INFO news: Twitter scraping for '@saborbank' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-10 11:59:30,662] INFO news: Fetched 0 new articles from '@saborbank'
+[2026-03-10 11:59:30,662] INFO news: Twitter scraping for '@VitalikButerin' — requires API integration. Set up Twitter API v2 credentials to enable.
+[2026-03-10 11:59:30,663] INFO news: Fetched 0 new articles from '@VitalikButerin'
+[2026-03-10 11:59:30,664] INFO news: Scraping website: The Block (https://www.theblock.co)
+[2026-03-10 11:59:31,255] ERROR news: Failed to fetch https://www.theblock.co: Client error '403 Forbidden' for url 'https://www.theblock.co'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+[2026-03-10 11:59:31,255] INFO news: Fetched 0 new articles from 'The Block'
+[2026-03-10 11:59:31,256] INFO news: Scraping RSS: Decrypt RSS (https://decrypt.co/feed)
+[2026-03-10 11:59:31,511] INFO news: Created article: Wall Street Banks Weigh Lawsuit Over Crypto Banking Charters
+[2026-03-10 11:59:31,513] INFO news: Created article: Trump's DOJ Seeks October Retrial for Tornado Cash Developer
+[2026-03-10 11:59:31,514] INFO news: Created article: Elon Musk’s Grok Faces UK Backlash After AI Posts Mock Footb
+[2026-03-10 11:59:31,516] INFO news: Created article: Bitcoin Shows ‘Tentative Signs of Improvement’ as Iran Confl
+[2026-03-10 11:59:31,518] INFO news: Created article: Americans Use AI Every Day—But Most Still Don't Like It, New
+[2026-03-10 11:59:31,519] INFO news: Created article: Moldova's Anticorruption Center Alleges $107M Crypto Scheme 
+[2026-03-10 11:59:31,520] INFO news: Created article: Bitcoin Die-Hard Jack Dorsey Doesn't Like Stablecoins, But B
+[2026-03-10 11:59:31,522] INFO news: Created article: Zcash Outpaces Bitcoin Gains as Key Development Team Raises 
+[2026-03-10 11:59:31,523] INFO news: Created article: Anthropic Sues Trump Admin Over 'Supply Chain Risk' Designat
+[2026-03-10 11:59:31,524] INFO news: Created article: Bitcoin Price Bounces, But Bears Are Still in Control: Analy
+[2026-03-10 11:59:31,525] INFO news: Created article: Sharplink Posts $734 Million Loss as Ethereum Staking Revenu
+[2026-03-10 11:59:31,527] INFO news: Created article: Coinbase Debuts Crypto Futures for European Traders, Includi
+[2026-03-10 11:59:31,528] INFO news: Created article: Nigel Farage Backs Bitcoin Treasury Firm Chaired By Former C
+[2026-03-10 11:59:31,529] INFO news: Created article: Strategy Drops $1.28 Billion on Bitcoin, Issues $377 Million
+[2026-03-10 11:59:31,530] INFO news: Created article: Bitcoin ETF Flows Cool to $619 Million as Oil Prices Spike
+[2026-03-10 11:59:31,532] INFO news: Created article: Morning Minute: Bitcoin Rebounds to $69K as Oil Skyrockets, 
+[2026-03-10 11:59:31,533] INFO news: Created article: Ethereum Rises to $2,000 as Tom Lee's BitMine Tops Up $9 Bil
+[2026-03-10 11:59:31,534] INFO news: Created article: Nasdaq Partners With Kraken for Tokenized Stocks, Launching 
+[2026-03-10 11:59:31,535] INFO news: Created article: Vienna-based Startup Launches AI Pipeline Builder for Gaming
+[2026-03-10 11:59:31,537] INFO news: Created article: Post-Quantum Shift Could Force Crypto Exchanges to Rethink W
+[2026-03-10 11:59:31,537] INFO news: Fetched 20 new articles from 'Decrypt RSS'
+[2026-03-10 11:59:31,538] INFO news: Verifying article 'Wall Street Banks Weigh Lawsuit Over Crypto Bankin' with provider=mock
+[2026-03-10 11:59:31,539] INFO news: Verdict: FAKE (82%) for 'Wall Street Banks Weigh Lawsuit Over Crypto Bankin'
+[2026-03-10 11:59:31,540] INFO news: Added 2 images to 'Wall Street Banks Weigh Lawsuit Over Crypto Bankin'
+[2026-03-10 11:59:31,541] INFO news: Verifying article 'Trump's DOJ Seeks October Retrial for Tornado Cash' with provider=mock
+[2026-03-10 11:59:31,542] INFO news: Verdict: REAL (85%) for 'Trump's DOJ Seeks October Retrial for Tornado Cash'
+[2026-03-10 11:59:31,542] INFO news: Added 2 images to 'Trump's DOJ Seeks October Retrial for Tornado Cash'
+[2026-03-10 11:59:31,542] INFO news: Verifying article 'Elon Musk’s Grok Faces UK Backlash After AI Posts ' with provider=mock
+[2026-03-10 11:59:31,544] INFO news: Verdict: UNCERTAIN (59%) for 'Elon Musk’s Grok Faces UK Backlash After AI Posts '
+[2026-03-10 11:59:31,544] INFO news: Added 2 images to 'Elon Musk’s Grok Faces UK Backlash After AI Posts '
+[2026-03-10 11:59:31,544] INFO news: Verifying article 'Bitcoin Shows ‘Tentative Signs of Improvement’ as ' with provider=mock
+[2026-03-10 11:59:31,545] INFO news: Verdict: UNCERTAIN (41%) for 'Bitcoin Shows ‘Tentative Signs of Improvement’ as '
+[2026-03-10 11:59:31,546] INFO news: Added 2 images to 'Bitcoin Shows ‘Tentative Signs of Improvement’ as '
+[2026-03-10 11:59:31,546] INFO news: Verifying article 'Americans Use AI Every Day—But Most Still Don't Li' with provider=mock
+[2026-03-10 11:59:31,547] INFO news: Verdict: REAL (85%) for 'Americans Use AI Every Day—But Most Still Don't Li'
+[2026-03-10 11:59:31,548] INFO news: Added 2 images to 'Americans Use AI Every Day—But Most Still Don't Li'
+[2026-03-10 11:59:31,548] INFO news: Verifying article 'Moldova's Anticorruption Center Alleges $107M Cryp' with provider=mock
+[2026-03-10 11:59:31,549] INFO news: Verdict: UNCERTAIN (56%) for 'Moldova's Anticorruption Center Alleges $107M Cryp'
+[2026-03-10 11:59:31,550] INFO news: Added 2 images to 'Moldova's Anticorruption Center Alleges $107M Cryp'
+[2026-03-10 11:59:31,550] INFO news: Verifying article 'Bitcoin Die-Hard Jack Dorsey Doesn't Like Stableco' with provider=mock
+[2026-03-10 11:59:31,551] INFO news: Verdict: UNCERTAIN (56%) for 'Bitcoin Die-Hard Jack Dorsey Doesn't Like Stableco'
+[2026-03-10 11:59:31,551] INFO news: Added 2 images to 'Bitcoin Die-Hard Jack Dorsey Doesn't Like Stableco'
+[2026-03-10 11:59:31,551] INFO news: Verifying article 'Zcash Outpaces Bitcoin Gains as Key Development Te' with provider=mock
+[2026-03-10 11:59:31,552] INFO news: Verdict: REAL (83%) for 'Zcash Outpaces Bitcoin Gains as Key Development Te'
+[2026-03-10 11:59:31,553] INFO news: Added 2 images to 'Zcash Outpaces Bitcoin Gains as Key Development Te'
+[2026-03-10 11:59:31,553] INFO news: Verifying article 'Anthropic Sues Trump Admin Over 'Supply Chain Risk' with provider=mock
+[2026-03-10 11:59:31,554] INFO news: Verdict: REAL (85%) for 'Anthropic Sues Trump Admin Over 'Supply Chain Risk'
+[2026-03-10 11:59:31,555] INFO news: Added 2 images to 'Anthropic Sues Trump Admin Over 'Supply Chain Risk'
+[2026-03-10 11:59:31,555] INFO news: Verifying article 'Bitcoin Price Bounces, But Bears Are Still in Cont' with provider=mock
+[2026-03-10 11:59:31,556] INFO news: Verdict: UNCERTAIN (53%) for 'Bitcoin Price Bounces, But Bears Are Still in Cont'
+[2026-03-10 11:59:31,557] INFO news: Added 2 images to 'Bitcoin Price Bounces, But Bears Are Still in Cont'
+[2026-03-10 11:59:31,557] INFO news: Verifying article 'Sharplink Posts $734 Million Loss as Ethereum Stak' with provider=mock
+[2026-03-10 11:59:31,558] INFO news: Verdict: REAL (86%) for 'Sharplink Posts $734 Million Loss as Ethereum Stak'
+[2026-03-10 11:59:31,559] INFO news: Added 2 images to 'Sharplink Posts $734 Million Loss as Ethereum Stak'
+[2026-03-10 11:59:31,559] INFO news: Verifying article 'Coinbase Debuts Crypto Futures for European Trader' with provider=mock
+[2026-03-10 11:59:31,560] INFO news: Verdict: UNCERTAIN (49%) for 'Coinbase Debuts Crypto Futures for European Trader'
+[2026-03-10 11:59:31,561] INFO news: Added 2 images to 'Coinbase Debuts Crypto Futures for European Trader'
+[2026-03-10 11:59:31,561] INFO news: Verifying article 'Nigel Farage Backs Bitcoin Treasury Firm Chaired B' with provider=mock
+[2026-03-10 11:59:31,562] INFO news: Verdict: REAL (83%) for 'Nigel Farage Backs Bitcoin Treasury Firm Chaired B'
+[2026-03-10 11:59:31,562] INFO news: Added 2 images to 'Nigel Farage Backs Bitcoin Treasury Firm Chaired B'
+[2026-03-10 11:59:31,563] INFO news: Verifying article 'Strategy Drops $1.28 Billion on Bitcoin, Issues $3' with provider=mock
+[2026-03-10 11:59:31,564] INFO news: Verdict: UNCERTAIN (44%) for 'Strategy Drops $1.28 Billion on Bitcoin, Issues $3'
+[2026-03-10 11:59:31,564] INFO news: Added 2 images to 'Strategy Drops $1.28 Billion on Bitcoin, Issues $3'
+[2026-03-10 11:59:31,564] INFO news: Verifying article 'Bitcoin ETF Flows Cool to $619 Million as Oil Pric' with provider=mock
+[2026-03-10 11:59:31,565] INFO news: Verdict: REAL (76%) for 'Bitcoin ETF Flows Cool to $619 Million as Oil Pric'
+[2026-03-10 11:59:31,566] INFO news: Added 2 images to 'Bitcoin ETF Flows Cool to $619 Million as Oil Pric'
+[2026-03-10 11:59:31,566] INFO news: Verifying article 'Morning Minute: Bitcoin Rebounds to $69K as Oil Sk' with provider=mock
+[2026-03-10 11:59:31,567] INFO news: Verdict: REAL (88%) for 'Morning Minute: Bitcoin Rebounds to $69K as Oil Sk'
+[2026-03-10 11:59:31,568] INFO news: Added 2 images to 'Morning Minute: Bitcoin Rebounds to $69K as Oil Sk'
+[2026-03-10 11:59:31,568] INFO news: Verifying article 'Ethereum Rises to $2,000 as Tom Lee's BitMine Tops' with provider=mock
+[2026-03-10 11:59:31,569] INFO news: Verdict: REAL (86%) for 'Ethereum Rises to $2,000 as Tom Lee's BitMine Tops'
+[2026-03-10 11:59:31,570] INFO news: Added 2 images to 'Ethereum Rises to $2,000 as Tom Lee's BitMine Tops'
+[2026-03-10 11:59:31,570] INFO news: Verifying article 'Nasdaq Partners With Kraken for Tokenized Stocks, ' with provider=mock
+[2026-03-10 11:59:31,571] INFO news: Verdict: UNCERTAIN (46%) for 'Nasdaq Partners With Kraken for Tokenized Stocks, '
+[2026-03-10 11:59:31,572] INFO news: Added 2 images to 'Nasdaq Partners With Kraken for Tokenized Stocks, '
+[2026-03-10 11:59:31,572] INFO news: Verifying article 'Vienna-based Startup Launches AI Pipeline Builder ' with provider=mock
+[2026-03-10 11:59:31,573] INFO news: Verdict: FAKE (68%) for 'Vienna-based Startup Launches AI Pipeline Builder '
+[2026-03-10 11:59:31,573] INFO news: Added 2 images to 'Vienna-based Startup Launches AI Pipeline Builder '
+[2026-03-10 11:59:31,574] INFO news: Verifying article 'Post-Quantum Shift Could Force Crypto Exchanges to' with provider=mock
+[2026-03-10 11:59:31,575] INFO news: Verdict: REAL (76%) for 'Post-Quantum Shift Could Force Crypto Exchanges to'
+[2026-03-10 11:59:31,575] INFO news: Added 2 images to 'Post-Quantum Shift Could Force Crypto Exchanges to'
+[2026-03-10 11:59:31,576] INFO news: Scraping RSS: Bitcoin Magazine RSS (https://bitcoinmagazine.com/.rss/full/)
+[2026-03-10 11:59:34,044] INFO news: Created article: Bitcoin Has a Golden Opportunity With AI Agents, It’s Time t
+[2026-03-10 11:59:34,046] INFO news: Created article: Coinbase Launches Regulated Bitcoin and Crypto Futures Acros
+[2026-03-10 11:59:34,049] INFO news: Created article: Nasdaq and Crypto-Exchange Kraken Partner to Bring Tokenized
+[2026-03-10 11:59:34,052] INFO news: Created article: Public Bitcoin Miners are Dumping Bitcoin for AI, a Historic
+[2026-03-10 11:59:34,054] INFO news: Created article: Bitcoin Price Teeters Near $69,000 Despite Market Volatility
+[2026-03-10 11:59:34,056] INFO news: Created article: Bitcoin Hits 20 Million Mined: Less Than 1 Million Coins Lef
+[2026-03-10 11:59:34,058] INFO news: Created article: U.S. Treasury Recognizes Legitimate Uses for Crypto Mixers, 
+[2026-03-10 11:59:34,059] INFO news: Created article: Nigel Farage Acquires 6% Stake in Bitcoin Firm Stack BTC
+[2026-03-10 11:59:34,061] INFO news: Created article: Strategy (MSTR) Spends $1.28 Billion to Buy More Bitcoin, Ho
+[2026-03-10 11:59:34,063] INFO news: Created article: Utexo Raises $7.5M to Launch Bitcoin-Native USDT Settlement 
+[2026-03-10 11:59:34,063] INFO news: Fetched 10 new articles from 'Bitcoin Magazine RSS'
+[2026-03-10 11:59:34,064] INFO news: Verifying article 'Bitcoin Has a Golden Opportunity With AI Agents, I' with provider=mock
+[2026-03-10 11:59:34,065] INFO news: Verdict: UNCERTAIN (51%) for 'Bitcoin Has a Golden Opportunity With AI Agents, I'
+[2026-03-10 11:59:34,066] INFO news: Added 2 images to 'Bitcoin Has a Golden Opportunity With AI Agents, I'
+[2026-03-10 11:59:34,066] INFO news: Verifying article 'Coinbase Launches Regulated Bitcoin and Crypto Fut' with provider=mock
+[2026-03-10 11:59:34,067] INFO news: Verdict: REAL (89%) for 'Coinbase Launches Regulated Bitcoin and Crypto Fut'
+[2026-03-10 11:59:34,067] INFO news: Added 2 images to 'Coinbase Launches Regulated Bitcoin and Crypto Fut'
+[2026-03-10 11:59:34,068] INFO news: Verifying article 'Nasdaq and Crypto-Exchange Kraken Partner to Bring' with provider=mock
+[2026-03-10 11:59:34,069] INFO news: Verdict: UNCERTAIN (47%) for 'Nasdaq and Crypto-Exchange Kraken Partner to Bring'
+[2026-03-10 11:59:34,069] INFO news: Added 2 images to 'Nasdaq and Crypto-Exchange Kraken Partner to Bring'
+[2026-03-10 11:59:34,069] INFO news: Verifying article 'Public Bitcoin Miners are Dumping Bitcoin for AI, ' with provider=mock
+[2026-03-10 11:59:34,070] INFO news: Verdict: FAKE (68%) for 'Public Bitcoin Miners are Dumping Bitcoin for AI, '
+[2026-03-10 11:59:34,071] INFO news: Verifying article 'Bitcoin Price Teeters Near $69,000 Despite Market ' with provider=mock
+[2026-03-10 11:59:34,072] INFO news: Verdict: FAKE (83%) for 'Bitcoin Price Teeters Near $69,000 Despite Market '
+[2026-03-10 11:59:34,072] INFO news: Verifying article 'Bitcoin Hits 20 Million Mined: Less Than 1 Million' with provider=mock
+[2026-03-10 11:59:34,073] INFO news: Verdict: REAL (93%) for 'Bitcoin Hits 20 Million Mined: Less Than 1 Million'
+[2026-03-10 11:59:34,073] INFO news: Added 2 images to 'Bitcoin Hits 20 Million Mined: Less Than 1 Million'
+[2026-03-10 11:59:34,073] INFO news: Verifying article 'U.S. Treasury Recognizes Legitimate Uses for Crypt' with provider=mock
+[2026-03-10 11:59:34,075] INFO news: Verdict: REAL (87%) for 'U.S. Treasury Recognizes Legitimate Uses for Crypt'
+[2026-03-10 11:59:34,075] INFO news: Verifying article 'Nigel Farage Acquires 6% Stake in Bitcoin Firm Sta' with provider=mock
+[2026-03-10 11:59:34,078] INFO news: Verdict: REAL (90%) for 'Nigel Farage Acquires 6% Stake in Bitcoin Firm Sta'
+[2026-03-10 11:59:34,079] INFO news: Added 2 images to 'Nigel Farage Acquires 6% Stake in Bitcoin Firm Sta'
+[2026-03-10 11:59:34,080] INFO news: Verifying article 'Strategy (MSTR) Spends $1.28 Billion to Buy More B' with provider=mock
+[2026-03-10 11:59:34,081] INFO news: Verdict: UNCERTAIN (59%) for 'Strategy (MSTR) Spends $1.28 Billion to Buy More B'
+[2026-03-10 11:59:34,082] INFO news: Verifying article 'Utexo Raises $7.5M to Launch Bitcoin-Native USDT S' with provider=mock
+[2026-03-10 11:59:34,084] INFO news: Verdict: FAKE (71%) for 'Utexo Raises $7.5M to Launch Bitcoin-Native USDT S'
+[2026-03-10 11:59:34,086] INFO news: Added 2 images to 'Utexo Raises $7.5M to Launch Bitcoin-Native USDT S'
+[2026-03-10 11:59:34,086] INFO news: Scraping RSS: CoinTelegraph RSS (https://cointelegraph.com/rss)
+[2026-03-10 11:59:35,321] INFO news: Created article: Bhutan moves $11.8M in BTC from its national stash: Arkham
+[2026-03-10 11:59:35,323] INFO news: Created article: Vitalik Buterin envisions ‘one-click’ Ether staking for inst
+[2026-03-10 11:59:35,324] INFO news: Created article: US prosecutors seek Roman Storm retrial after mixed verdict
+[2026-03-10 11:59:35,326] INFO news: Created article: Wall Street funneled $540M into US Solana ETFs in Q4: Bloomb
+[2026-03-10 11:59:35,327] INFO news: Created article: Sharplink reports $735M loss in 2025 as Ethereum dived
+[2026-03-10 11:59:35,328] INFO news: Created article: Oil tumbles, crypto gains as Trump sends mixed signals over 
+[2026-03-10 11:59:35,329] INFO news: Created article: AI firm Anthropic sues Trump admin over ‘supply chain risk’ 
+[2026-03-10 11:59:35,331] INFO news: Created article: US banking lobby considers suing OCC over crypto bank charte
+[2026-03-10 11:59:35,332] INFO news: Created article: NFT lending protocol Gondi says platform secured after $230K
+[2026-03-10 11:59:35,333] INFO news: Created article: Zcash devs raise $25M from major VCs months after ECC split
+[2026-03-10 11:59:35,334] INFO news: Created article: Bitcoin vs gold: ETF flows point to early capital rotation s
+[2026-03-10 11:59:35,335] INFO news: Created article: Here’s what happened in crypto today
+[2026-03-10 11:59:35,336] INFO news: Created article: Will Bitcoin follow oil’s historic surge and rally to $79K b
+[2026-03-10 11:59:35,338] INFO news: Created article: Crypto-backed PAC spends $8.6M in Illinois races ahead of US
+[2026-03-10 11:59:35,339] INFO news: Created article: Nasdaq links EU markets to Boerse Stuttgart's tokenized sett
+[2026-03-10 11:59:35,340] INFO news: Created article: Aon tests stablecoin payments for insurance premiums with Pa
+[2026-03-10 11:59:35,342] INFO news: Created article: Wyoming Senator revives crypto tax exemption debate amid mar
+[2026-03-10 11:59:35,343] INFO news: Created article: Price predictions 3/9: SPX, DXY, BTC, ETH, BNB, XRP, SOL, DO
+[2026-03-10 11:59:35,344] INFO news: Created article: Blockchain.com expands into Ghana after 700% trading growth 
+[2026-03-10 11:59:35,345] INFO news: Created article: Can you still mine Bitcoin on a PC in 2026? Here is the real
+[2026-03-10 11:59:35,346] INFO news: Fetched 20 new articles from 'CoinTelegraph RSS'
+[2026-03-10 11:59:35,346] INFO news: Verifying article 'Bhutan moves $11.8M in BTC from its national stash' with provider=mock
+[2026-03-10 11:59:35,347] INFO news: Verdict: FAKE (74%) for 'Bhutan moves $11.8M in BTC from its national stash'
+[2026-03-10 11:59:35,348] INFO news: Added 2 images to 'Bhutan moves $11.8M in BTC from its national stash'
+[2026-03-10 11:59:35,348] INFO news: Verifying article 'Vitalik Buterin envisions ‘one-click’ Ether stakin' with provider=mock
+[2026-03-10 11:59:35,349] INFO news: Verdict: FAKE (72%) for 'Vitalik Buterin envisions ‘one-click’ Ether stakin'
+[2026-03-10 11:59:35,350] INFO news: Added 2 images to 'Vitalik Buterin envisions ‘one-click’ Ether stakin'
+[2026-03-10 11:59:35,350] INFO news: Verifying article 'US prosecutors seek Roman Storm retrial after mixe' with provider=mock
+[2026-03-10 11:59:35,351] INFO news: Verdict: REAL (89%) for 'US prosecutors seek Roman Storm retrial after mixe'
+[2026-03-10 11:59:35,352] INFO news: Added 2 images to 'US prosecutors seek Roman Storm retrial after mixe'
+[2026-03-10 11:59:35,352] INFO news: Verifying article 'Wall Street funneled $540M into US Solana ETFs in ' with provider=mock
+[2026-03-10 11:59:35,353] INFO news: Verdict: REAL (88%) for 'Wall Street funneled $540M into US Solana ETFs in '
+[2026-03-10 11:59:35,353] INFO news: Added 2 images to 'Wall Street funneled $540M into US Solana ETFs in '
+[2026-03-10 11:59:35,353] INFO news: Verifying article 'Sharplink reports $735M loss in 2025 as Ethereum d' with provider=mock
+[2026-03-10 11:59:35,354] INFO news: Verdict: REAL (90%) for 'Sharplink reports $735M loss in 2025 as Ethereum d'
+[2026-03-10 11:59:35,355] INFO news: Added 2 images to 'Sharplink reports $735M loss in 2025 as Ethereum d'
+[2026-03-10 11:59:35,355] INFO news: Verifying article 'Oil tumbles, crypto gains as Trump sends mixed sig' with provider=mock
+[2026-03-10 11:59:35,356] INFO news: Verdict: UNCERTAIN (44%) for 'Oil tumbles, crypto gains as Trump sends mixed sig'
+[2026-03-10 11:59:35,357] INFO news: Added 2 images to 'Oil tumbles, crypto gains as Trump sends mixed sig'
+[2026-03-10 11:59:35,357] INFO news: Verifying article 'AI firm Anthropic sues Trump admin over ‘supply ch' with provider=mock
+[2026-03-10 11:59:35,358] INFO news: Verdict: REAL (89%) for 'AI firm Anthropic sues Trump admin over ‘supply ch'
+[2026-03-10 11:59:35,359] INFO news: Added 2 images to 'AI firm Anthropic sues Trump admin over ‘supply ch'
+[2026-03-10 11:59:35,359] INFO news: Verifying article 'US banking lobby considers suing OCC over crypto b' with provider=mock
+[2026-03-10 11:59:35,360] INFO news: Verdict: UNCERTAIN (44%) for 'US banking lobby considers suing OCC over crypto b'
+[2026-03-10 11:59:35,361] INFO news: Added 2 images to 'US banking lobby considers suing OCC over crypto b'
+[2026-03-10 11:59:35,361] INFO news: Verifying article 'NFT lending protocol Gondi says platform secured a' with provider=mock
+[2026-03-10 11:59:35,362] INFO news: Verdict: REAL (90%) for 'NFT lending protocol Gondi says platform secured a'
+[2026-03-10 11:59:35,363] INFO news: Added 2 images to 'NFT lending protocol Gondi says platform secured a'
+[2026-03-10 11:59:35,363] INFO news: Verifying article 'Zcash devs raise $25M from major VCs months after ' with provider=mock
+[2026-03-10 11:59:35,364] INFO news: Verdict: REAL (87%) for 'Zcash devs raise $25M from major VCs months after '
+[2026-03-10 11:59:35,365] INFO news: Added 2 images to 'Zcash devs raise $25M from major VCs months after '
+[2026-03-10 11:59:35,365] INFO news: Verifying article 'Bitcoin vs gold: ETF flows point to early capital ' with provider=mock
+[2026-03-10 11:59:35,366] INFO news: Verdict: REAL (79%) for 'Bitcoin vs gold: ETF flows point to early capital '
+[2026-03-10 11:59:35,366] INFO news: Added 2 images to 'Bitcoin vs gold: ETF flows point to early capital '
+[2026-03-10 11:59:35,366] INFO news: Verifying article 'Here’s what happened in crypto today' with provider=mock
+[2026-03-10 11:59:35,367] INFO news: Verdict: REAL (90%) for 'Here’s what happened in crypto today'
+[2026-03-10 11:59:35,368] INFO news: Added 2 images to 'Here’s what happened in crypto today'
+[2026-03-10 11:59:35,368] INFO news: Verifying article 'Will Bitcoin follow oil’s historic surge and rally' with provider=mock
+[2026-03-10 11:59:35,369] INFO news: Verdict: REAL (88%) for 'Will Bitcoin follow oil’s historic surge and rally'
+[2026-03-10 11:59:35,370] INFO news: Added 2 images to 'Will Bitcoin follow oil’s historic surge and rally'
+[2026-03-10 11:59:35,370] INFO news: Verifying article 'Crypto-backed PAC spends $8.6M in Illinois races a' with provider=mock
+[2026-03-10 11:59:35,371] INFO news: Verdict: REAL (85%) for 'Crypto-backed PAC spends $8.6M in Illinois races a'
+[2026-03-10 11:59:35,372] INFO news: Added 2 images to 'Crypto-backed PAC spends $8.6M in Illinois races a'
+[2026-03-10 11:59:35,372] INFO news: Verifying article 'Nasdaq links EU markets to Boerse Stuttgart's toke' with provider=mock
+[2026-03-10 11:59:35,373] INFO news: Verdict: REAL (81%) for 'Nasdaq links EU markets to Boerse Stuttgart's toke'
+[2026-03-10 11:59:35,374] INFO news: Added 2 images to 'Nasdaq links EU markets to Boerse Stuttgart's toke'
+[2026-03-10 11:59:35,374] INFO news: Verifying article 'Aon tests stablecoin payments for insurance premiu' with provider=mock
+[2026-03-10 11:59:35,375] INFO news: Verdict: UNCERTAIN (44%) for 'Aon tests stablecoin payments for insurance premiu'
+[2026-03-10 11:59:35,376] INFO news: Added 2 images to 'Aon tests stablecoin payments for insurance premiu'
+[2026-03-10 11:59:35,376] INFO news: Verifying article 'Wyoming Senator revives crypto tax exemption debat' with provider=mock
+[2026-03-10 11:59:35,377] INFO news: Verdict: REAL (91%) for 'Wyoming Senator revives crypto tax exemption debat'
+[2026-03-10 11:59:35,378] INFO news: Added 2 images to 'Wyoming Senator revives crypto tax exemption debat'
+[2026-03-10 11:59:35,378] INFO news: Verifying article 'Price predictions 3/9: SPX, DXY, BTC, ETH, BNB, XR' with provider=mock
+[2026-03-10 11:59:35,379] INFO news: Verdict: REAL (78%) for 'Price predictions 3/9: SPX, DXY, BTC, ETH, BNB, XR'
+[2026-03-10 11:59:35,379] INFO news: Added 2 images to 'Price predictions 3/9: SPX, DXY, BTC, ETH, BNB, XR'
+[2026-03-10 11:59:35,380] INFO news: Verifying article 'Blockchain.com expands into Ghana after 700% tradi' with provider=mock
+[2026-03-10 11:59:35,381] INFO news: Verdict: UNCERTAIN (47%) for 'Blockchain.com expands into Ghana after 700% tradi'
+[2026-03-10 11:59:35,381] INFO news: Added 2 images to 'Blockchain.com expands into Ghana after 700% tradi'
+[2026-03-10 11:59:35,382] INFO news: Verifying article 'Can you still mine Bitcoin on a PC in 2026? Here i' with provider=mock
+[2026-03-10 11:59:35,382] INFO news: Verdict: UNCERTAIN (58%) for 'Can you still mine Bitcoin on a PC in 2026? Here i'
+[2026-03-10 11:59:35,383] INFO news: Added 2 images to 'Can you still mine Bitcoin on a PC in 2026? Here i'
+[2026-03-10 11:59:35,383] INFO news: Scraping RSS: CoinDesk RSS (https://www.coindesk.com/arc/outboundfeeds/rss/)
+[2026-03-10 11:59:35,836] INFO news: Created article: Pudgy Penguins launches its 'Club Penguin' moment, and the g
+[2026-03-10 11:59:35,840] INFO news: Created article: Here's how traders and big buyers stepped in to keep bitcoin
+[2026-03-10 11:59:35,844] INFO news: Created article: AI tokens rally after Nvidia open-source agent plan, beat Co
+[2026-03-10 11:59:35,846] INFO news: Created article: Bhutan sells $42.5 Million of bitcoin in 2026 as national st
+[2026-03-10 11:59:35,849] INFO news: Created article: Ether, solana, XRP jump higher as Trump signals Iran war nea
+[2026-03-10 11:59:35,851] INFO news: Created article: Bitcoin jumps past $70,000 as war volatility fades
+[2026-03-10 11:59:35,852] INFO news: Created article: Trump's threat to block Congress over voter-ID law leaves cr
+[2026-03-10 11:59:35,853] INFO news: Created article: How the war in Iran and trader positioning could be behind t
+[2026-03-10 11:59:35,854] INFO news: Created article: Crypto and stocks add to gains as Trump says Iran war could 
+[2026-03-10 11:59:35,855] INFO news: Created article: Bitcoin could be the big winner if the U.S.-Iran conflict dr
+[2026-03-10 11:59:35,856] INFO news: Created article: Bitcoin rises to $69,000, stocks reverse big early losses, a
+[2026-03-10 11:59:35,858] INFO news: Created article: Josh Swihart's Zcash Open Development Lab raises $25 million
+[2026-03-10 11:59:35,859] INFO news: Created article: Global insurance broker Aon tests stablecoin payments with C
+[2026-03-10 11:59:35,860] INFO news: Created article: Stock market volatility hits one-year high, possibly marking
+[2026-03-10 11:59:35,861] INFO news: Created article: 'Mini crypto winter' nearly over, says Tom Lee as Bitmine ra
+[2026-03-10 11:59:35,862] INFO news: Created article: CoinDesk 20 Performance Update: Avalanche (AVAX) Gains 2% as
+[2026-03-10 11:59:35,863] INFO news: Created article: Crypto doesn’t belong in AI portfolio as it’s ‘a different a
+[2026-03-10 11:59:35,864] INFO news: Created article: KAST raises $80 million at $600 million  valuation to expand
+[2026-03-10 11:59:35,865] INFO news: Created article: Bithumb faces proposed 6-month partial ban over South Korea 
+[2026-03-10 11:59:35,866] INFO news: Created article: U.S. Treasury signals shift on crypto mixers, acknowledges l
+[2026-03-10 11:59:35,867] INFO news: Fetched 20 new articles from 'CoinDesk RSS'
+[2026-03-10 11:59:35,867] INFO news: Verifying article 'Pudgy Penguins launches its 'Club Penguin' moment,' with provider=mock
+[2026-03-10 11:59:35,869] INFO news: Verdict: REAL (77%) for 'Pudgy Penguins launches its 'Club Penguin' moment,'
+[2026-03-10 11:59:35,869] INFO news: Added 2 images to 'Pudgy Penguins launches its 'Club Penguin' moment,'
+[2026-03-10 11:59:35,869] INFO news: Verifying article 'Here's how traders and big buyers stepped in to ke' with provider=mock
+[2026-03-10 11:59:35,871] INFO news: Verdict: REAL (77%) for 'Here's how traders and big buyers stepped in to ke'
+[2026-03-10 11:59:35,871] INFO news: Added 2 images to 'Here's how traders and big buyers stepped in to ke'
+[2026-03-10 11:59:35,872] INFO news: Verifying article 'AI tokens rally after Nvidia open-source agent pla' with provider=mock
+[2026-03-10 11:59:35,873] INFO news: Verdict: REAL (86%) for 'AI tokens rally after Nvidia open-source agent pla'
+[2026-03-10 11:59:35,873] INFO news: Added 2 images to 'AI tokens rally after Nvidia open-source agent pla'
+[2026-03-10 11:59:35,874] INFO news: Verifying article 'Bhutan sells $42.5 Million of bitcoin in 2026 as n' with provider=mock
+[2026-03-10 11:59:35,875] INFO news: Verdict: REAL (76%) for 'Bhutan sells $42.5 Million of bitcoin in 2026 as n'
+[2026-03-10 11:59:35,875] INFO news: Added 2 images to 'Bhutan sells $42.5 Million of bitcoin in 2026 as n'
+[2026-03-10 11:59:35,875] INFO news: Verifying article 'Ether, solana, XRP jump higher as Trump signals Ir' with provider=mock
+[2026-03-10 11:59:35,876] INFO news: Verdict: REAL (87%) for 'Ether, solana, XRP jump higher as Trump signals Ir'
+[2026-03-10 11:59:35,877] INFO news: Added 2 images to 'Ether, solana, XRP jump higher as Trump signals Ir'
+[2026-03-10 11:59:35,877] INFO news: Verifying article 'Bitcoin jumps past $70,000 as war volatility fades' with provider=mock
+[2026-03-10 11:59:35,878] INFO news: Verdict: UNCERTAIN (53%) for 'Bitcoin jumps past $70,000 as war volatility fades'
+[2026-03-10 11:59:35,879] INFO news: Added 2 images to 'Bitcoin jumps past $70,000 as war volatility fades'
+[2026-03-10 11:59:35,879] INFO news: Verifying article 'Trump's threat to block Congress over voter-ID law' with provider=mock
+[2026-03-10 11:59:35,880] INFO news: Verdict: REAL (91%) for 'Trump's threat to block Congress over voter-ID law'
+[2026-03-10 11:59:35,880] INFO news: Added 2 images to 'Trump's threat to block Congress over voter-ID law'
+[2026-03-10 11:59:35,881] INFO news: Verifying article 'How the war in Iran and trader positioning could b' with provider=mock
+[2026-03-10 11:59:35,882] INFO news: Verdict: UNCERTAIN (54%) for 'How the war in Iran and trader positioning could b'
+[2026-03-10 11:59:35,882] INFO news: Added 2 images to 'How the war in Iran and trader positioning could b'
+[2026-03-10 11:59:35,882] INFO news: Verifying article 'Crypto and stocks add to gains as Trump says Iran ' with provider=mock
+[2026-03-10 11:59:35,883] INFO news: Verdict: REAL (89%) for 'Crypto and stocks add to gains as Trump says Iran '
+[2026-03-10 11:59:35,884] INFO news: Added 2 images to 'Crypto and stocks add to gains as Trump says Iran '
+[2026-03-10 11:59:35,884] INFO news: Verifying article 'Bitcoin could be the big winner if the U.S.-Iran c' with provider=mock
+[2026-03-10 11:59:35,885] INFO news: Verdict: REAL (81%) for 'Bitcoin could be the big winner if the U.S.-Iran c'
+[2026-03-10 11:59:35,885] INFO news: Added 2 images to 'Bitcoin could be the big winner if the U.S.-Iran c'
+[2026-03-10 11:59:35,886] INFO news: Verifying article 'Bitcoin rises to $69,000, stocks reverse big early' with provider=mock
+[2026-03-10 11:59:35,886] INFO news: Verdict: REAL (80%) for 'Bitcoin rises to $69,000, stocks reverse big early'
+[2026-03-10 11:59:35,887] INFO news: Added 2 images to 'Bitcoin rises to $69,000, stocks reverse big early'
+[2026-03-10 11:59:35,887] INFO news: Verifying article 'Josh Swihart's Zcash Open Development Lab raises $' with provider=mock
+[2026-03-10 11:59:35,889] INFO news: Verdict: REAL (92%) for 'Josh Swihart's Zcash Open Development Lab raises $'
+[2026-03-10 11:59:35,889] INFO news: Added 2 images to 'Josh Swihart's Zcash Open Development Lab raises $'
+[2026-03-10 11:59:35,889] INFO news: Verifying article 'Global insurance broker Aon tests stablecoin payme' with provider=mock
+[2026-03-10 11:59:35,891] INFO news: Verdict: REAL (84%) for 'Global insurance broker Aon tests stablecoin payme'
+[2026-03-10 11:59:35,891] INFO news: Added 2 images to 'Global insurance broker Aon tests stablecoin payme'
+[2026-03-10 11:59:35,891] INFO news: Verifying article 'Stock market volatility hits one-year high, possib' with provider=mock
+[2026-03-10 11:59:35,892] INFO news: Verdict: FAKE (69%) for 'Stock market volatility hits one-year high, possib'
+[2026-03-10 11:59:35,893] INFO news: Added 2 images to 'Stock market volatility hits one-year high, possib'
+[2026-03-10 11:59:35,893] INFO news: Verifying article ''Mini crypto winter' nearly over, says Tom Lee as ' with provider=mock
+[2026-03-10 11:59:35,894] INFO news: Verdict: REAL (90%) for ''Mini crypto winter' nearly over, says Tom Lee as '
+[2026-03-10 11:59:35,895] INFO news: Added 2 images to ''Mini crypto winter' nearly over, says Tom Lee as '
+[2026-03-10 11:59:35,895] INFO news: Verifying article 'CoinDesk 20 Performance Update: Avalanche (AVAX) G' with provider=mock
+[2026-03-10 11:59:35,896] INFO news: Verdict: FAKE (83%) for 'CoinDesk 20 Performance Update: Avalanche (AVAX) G'
+[2026-03-10 11:59:35,897] INFO news: Added 2 images to 'CoinDesk 20 Performance Update: Avalanche (AVAX) G'
+[2026-03-10 11:59:35,897] INFO news: Verifying article 'Crypto doesn’t belong in AI portfolio as it’s ‘a d' with provider=mock
+[2026-03-10 11:59:35,898] INFO news: Verdict: REAL (92%) for 'Crypto doesn’t belong in AI portfolio as it’s ‘a d'
+[2026-03-10 11:59:35,898] INFO news: Added 2 images to 'Crypto doesn’t belong in AI portfolio as it’s ‘a d'
+[2026-03-10 11:59:35,898] INFO news: Verifying article 'KAST raises $80 million at $600 million  valuation' with provider=mock
+[2026-03-10 11:59:35,899] INFO news: Verdict: FAKE (69%) for 'KAST raises $80 million at $600 million  valuation'
+[2026-03-10 11:59:35,900] INFO news: Added 2 images to 'KAST raises $80 million at $600 million  valuation'
+[2026-03-10 11:59:35,900] INFO news: Verifying article 'Bithumb faces proposed 6-month partial ban over So' with provider=mock
+[2026-03-10 11:59:35,901] INFO news: Verdict: REAL (91%) for 'Bithumb faces proposed 6-month partial ban over So'
+[2026-03-10 11:59:35,902] INFO news: Added 2 images to 'Bithumb faces proposed 6-month partial ban over So'
+[2026-03-10 11:59:35,902] INFO news: Verifying article 'U.S. Treasury signals shift on crypto mixers, ackn' with provider=mock
+[2026-03-10 11:59:35,903] INFO news: Verdict: REAL (77%) for 'U.S. Treasury signals shift on crypto mixers, ackn'
+[2026-03-10 11:59:35,904] INFO news: Added 2 images to 'U.S. Treasury signals shift on crypto mixers, ackn'
+[2026-03-10 11:59:35,904] INFO news: Scraping website: Demo Source (https://demo.cryptotimes.dev)
+[2026-03-10 11:59:36,241] ERROR news: Failed to fetch https://demo.cryptotimes.dev: [Errno 11001] getaddrinfo failed
+[2026-03-10 11:59:36,245] INFO news: Fetched 0 new articles from 'Demo Source'
+[2026-03-10 11:59:36,245] INFO news: Fetch cycle complete: 70 new articles total

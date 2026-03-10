@@ -1,0 +1,25 @@
+# render.yaml — Render Blueprint for backend deployment
+# Place this file in your backend repo root
+
+services:
+  - type: web
+    name: crypto-times-api
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: gunicorn crypto_times.wsgi:application --bind 0.0.0.0:$PORT
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: CORS_ALLOWED_ORIGINS
+        value: "https://your-app.vercel.app"
+      - key: AI_PROVIDER
+        value: "mock"
+      - key: PYTHON_VERSION
+        value: "3.12.3"
