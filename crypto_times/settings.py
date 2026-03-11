@@ -1,6 +1,6 @@
 """
 Django settings for The Crypto Times backend.
-── UPDATED for frontend integration ──
+Production-ready with Render + Vercel integration.
 """
 
 import os
@@ -22,7 +22,13 @@ DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "yes")
 ALLOWED_HOSTS = [
     h.strip()
     for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if h.strip()
 ]
+
+# Allow Render's hostname automatically
+RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # ── Application Definition ─────────────────────────────────
 INSTALLED_APPS = [
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -73,14 +80,16 @@ TEMPLATES = [
 WSGI_APPLICATION = "crypto_times.wsgi.application"
 
 # ── Database ────────────────────────────────────────────────
-
-
 DATABASES = {
     "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL", "postgresql://postgres:Dishit@localhost:5432/cryptotimes"),
+        default=os.getenv(
+            "DATABASE_URL",
+            "postgresql://postgres:Dishit@localhost:5432/cryptotimes",
+        ),
         conn_max_age=600,
     )
 }
+
 # ── Auth ────────────────────────────────────────────────────
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
@@ -95,10 +104,10 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ── Static / Media ──────────────────────────────────────────
+# ── Static Files (WhiteNoise for production) ────────────────
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -108,7 +117,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ═══════════════════════════════════════════════════════════
 # CORS — Frontend ↔ Backend Connection
 # ═══════════════════════════════════════════════════════════
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # True in dev, False in prod
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
@@ -147,8 +156,6 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "anon": "100/minute",
     },
-    # CamelCase renderers — Django outputs snake_case fields as camelCase
-    # so the Next.js frontend receives { aiVerdict, confidenceScore, ... }
     "DEFAULT_RENDERER_CLASSES": [
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
         "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
@@ -166,8 +173,9 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY", "")
 FETCH_INTERVAL_MINUTES = int(os.getenv("FETCH_INTERVAL_MINUTES", "5"))
+TWITTER_BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN", "")
 
-# ── Logging ─────────────────────────────────────────────────
+# ── Logging (console only — no file logging on Render) ─────
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -182,15 +190,10 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "verbose",
         },
-        "file": {
-            "class": "logging.FileHandler",
-            "filename": BASE_DIR / "crypto_times.log",
-            "formatter": "verbose",
-        },
     },
     "loggers": {
-        "news": {"handlers": ["console", "file"], "level": "INFO"},
-        "api": {"handlers": ["console", "file"], "level": "INFO"},
+        "news": {"handlers": ["console"], "level": "INFO"},
+        "api": {"handlers": ["console"], "level": "INFO"},
         "django": {"handlers": ["console"], "level": "WARNING"},
     },
 }
