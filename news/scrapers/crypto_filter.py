@@ -1,61 +1,65 @@
 """
-Crypto relevance filter.
-Used by scrapers to skip non-crypto articles from general news sources.
+Strict crypto relevance filter.
+Only allows articles that are clearly about cryptocurrency.
 """
 
-# Keywords that indicate an article is crypto-related
-CRYPTO_KEYWORDS = [
-    # Coins & tokens
-    "bitcoin", "btc", "ethereum", "eth", "solana", "sol", "cardano", "ada",
-    "ripple", "xrp", "dogecoin", "doge", "polkadot", "avalanche", "polygon",
-    "matic", "chainlink", "litecoin", "tron", "shiba", "pepe", "memecoin",
-    "altcoin", "stablecoin", "usdt", "usdc", "tether", "dai",
-
-    # Core concepts
+# HIGH confidence keywords — if found in TITLE, article is crypto
+TITLE_KEYWORDS = [
+    "bitcoin", "btc", "ethereum", "eth", "solana", "sol", "cardano",
+    "ripple", "xrp", "dogecoin", "doge", "polygon", "matic", "chainlink",
+    "litecoin", "avalanche", "polkadot", "tron", "shiba inu", "pepe coin",
+    "memecoin", "altcoin", "stablecoin", "usdt", "usdc", "tether",
     "crypto", "cryptocurrency", "blockchain", "web3", "defi", "nft",
-    "token", "mining", "staking", "airdrop", "halving", "hash rate",
-    "smart contract", "decentralized", "layer 2", "layer-2", "l2",
-    "proof of stake", "proof of work", "consensus",
-
-    # DeFi
+    "token", "mining", "staking", "airdrop", "halving",
+    "smart contract", "decentralized", "layer 2", "layer-2",
     "uniswap", "aave", "compound", "makerdao", "lido", "curve",
-    "liquidity pool", "yield farming", "dex", "amm", "tvl",
-    "total value locked", "lending protocol",
+    "coinbase", "binance", "kraken", "gemini", "bitfinex",
+    "microstrategy", "grayscale", "bitcoin etf", "spot etf",
+    "crypto exchange", "crypto market", "crypto regulation",
+    "cbdc", "digital currency", "central bank digital",
+    "on-chain", "gas fee", "rug pull", "crypto hack",
+    "satoshi", "vitalik", "saylor",
+]
 
-    # Exchanges & companies
-    "coinbase", "binance", "kraken", "gemini", "ftx", "bitfinex",
-    "microstrategy", "grayscale", "blackrock etf", "bitcoin etf",
-    "spot etf", "crypto exchange",
-
-    # Regulation & legal
-    "sec crypto", "cftc crypto", "crypto regulation", "crypto ban",
-    "crypto tax", "cbdc", "digital dollar", "digital euro",
-    "digital currency", "central bank digital",
-
-    # Market terms
-    "crypto market", "bitcoin price", "eth price", "bull run",
-    "bear market", "crypto crash", "crypto rally", "whale",
-    "on-chain", "off-chain", "gas fee", "gas fees",
-
-    # Security
-    "crypto hack", "rug pull", "crypto scam", "phishing crypto",
-    "exploit", "bridge hack", "wallet hack",
-
-    # People
-    "satoshi", "vitalik", "cz binance", "michael saylor",
-    "gary gensler", "sam bankman",
+# MEDIUM confidence — only counts if found with another keyword
+SUPPORTING_KEYWORDS = [
+    "wallet", "ledger", "node", "validator", "consensus",
+    "proof of stake", "proof of work", "hash rate",
+    "bull run", "bear market", "whale", "liquidation",
+    "sec", "cftc", "regulation", "compliance",
+    "digital asset", "virtual currency", "distributed ledger",
+    "dex", "amm", "tvl", "yield", "liquidity pool",
+    "protocol", "mainnet", "testnet", "fork", "upgrade",
+    "exchange", "trading", "market cap",
 ]
 
 
 def is_crypto_related(title: str, summary: str = "") -> bool:
     """
-    Check if an article is related to cryptocurrency.
-    Returns True if any crypto keyword is found in title or summary.
+    Strict check if an article is about cryptocurrency.
+    
+    Rules:
+    1. If title contains any TITLE_KEYWORD → YES
+    2. If title contains 2+ SUPPORTING_KEYWORDS → YES
+    3. If summary contains 2+ TITLE_KEYWORDS → YES
+    4. Otherwise → NO
     """
-    text = (title + " " + summary).lower()
+    title_lower = title.lower()
+    summary_lower = summary.lower()
 
-    for keyword in CRYPTO_KEYWORDS:
-        if keyword in text:
+    # Rule 1: Title has a strong crypto keyword
+    for kw in TITLE_KEYWORDS:
+        if kw in title_lower:
             return True
+
+    # Rule 2: Title has 2+ supporting keywords
+    title_support_count = sum(1 for kw in SUPPORTING_KEYWORDS if kw in title_lower)
+    if title_support_count >= 2:
+        return True
+
+    # Rule 3: Summary has 2+ strong keywords
+    summary_strong_count = sum(1 for kw in TITLE_KEYWORDS if kw in summary_lower)
+    if summary_strong_count >= 2:
+        return True
 
     return False
