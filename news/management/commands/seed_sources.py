@@ -1,5 +1,6 @@
 """
-Django management command to seed the database with starter sources.
+Django management command to seed original news sources.
+These are primary sources — not competitors like CoinDesk or CoinTelegraph.
 Usage: python manage.py seed_sources
 """
 
@@ -8,60 +9,115 @@ from news.models import Source
 
 
 STARTER_SOURCES = [
+    # ── Official Government / Regulatory ────────────────────
     {
-        "name": "CoinDesk RSS",
+        "name": "SEC Press Releases RSS",
         "type": "rss",
-        "url": "https://www.coindesk.com/arc/outboundfeeds/rss/",
-        "description": "Leading crypto news outlet covering Bitcoin, Ethereum, and blockchain.",
+        "url": "https://www.sec.gov/news/pressreleases.rss",
+        "description": "Official SEC press releases — crypto enforcement, ETF approvals, regulatory actions.",
+        "reliability_score": 98,
+    },
+    {
+        "name": "Federal Reserve RSS",
+        "type": "rss",
+        "url": "https://www.federalreserve.gov/feeds/press_all.xml",
+        "description": "Federal Reserve press releases — interest rates, CBDC updates, monetary policy.",
+        "reliability_score": 99,
+    },
+
+    # ── Official Blockchain / Protocol Sources ──────────────
+    {
+        "name": "Ethereum Foundation Blog",
+        "type": "rss",
+        "url": "https://blog.ethereum.org/feed.xml",
+        "description": "Official Ethereum Foundation blog — protocol upgrades, research, ecosystem updates.",
+        "reliability_score": 97,
+    },
+    {
+        "name": "Solana News RSS",
+        "type": "rss",
+        "url": "https://solana.com/news/rss.xml",
+        "description": "Official Solana news — network updates, ecosystem growth, technical developments.",
+        "reliability_score": 95,
+    },
+
+    # ── Major Exchange / Company Blogs ──────────────────────
+    {
+        "name": "Coinbase Blog",
+        "type": "rss",
+        "url": "https://www.coinbase.com/blog/rss",
+        "description": "Official Coinbase blog — product launches, market insights, regulatory updates.",
         "reliability_score": 90,
     },
     {
-        "name": "CoinTelegraph RSS",
+        "name": "Binance Blog",
         "type": "rss",
-        "url": "https://cointelegraph.com/rss",
-        "description": "Major crypto and blockchain technology publication.",
+        "url": "https://www.binance.com/en/feed/rss",
+        "description": "Official Binance blog — exchange updates, listings, security alerts.",
         "reliability_score": 85,
     },
+
+    # ── On-Chain Data / Analytics ───────────────────────────
     {
-        "name": "Bitcoin Magazine RSS",
+        "name": "Glassnode Insights",
         "type": "rss",
-        "url": "https://bitcoinmagazine.com/.rss/full/",
-        "description": "The oldest publication covering Bitcoin news and analysis.",
+        "url": "https://insights.glassnode.com/rss/",
+        "description": "On-chain data analysis — Bitcoin and Ethereum market intelligence.",
         "reliability_score": 92,
     },
     {
-        "name": "Decrypt RSS",
+        "name": "Chainalysis Blog",
         "type": "rss",
-        "url": "https://decrypt.co/feed",
-        "description": "Web3 media company delivering demystified crypto news.",
-        "reliability_score": 87,
-    },
-    {
-        "name": "The Block",
-        "type": "website",
-        "url": "https://www.theblock.co",
-        "description": "Research-driven crypto journalism with in-depth analysis.",
-        "reliability_score": 88,
-    },
-    {
-        "name": "@VitalikButerin",
-        "type": "twitter",
-        "url": "https://x.com/VitalikButerin",
-        "description": "Ethereum co-founder. Frequent insights on crypto and tech.",
+        "url": "https://blog.chainalysis.com/feed/",
+        "description": "Blockchain analytics — crime reports, compliance trends, market research.",
         "reliability_score": 93,
     },
+
+    # ── Wire Services (original reporting) ──────────────────
     {
-        "name": "@saborbank",
-        "type": "twitter",
-        "url": "https://x.com/saborbank",
-        "description": "On-chain analyst specializing in whale movements.",
-        "reliability_score": 75,
+        "name": "Reuters Crypto RSS",
+        "type": "rss",
+        "url": "https://news.google.com/rss/search?q=cryptocurrency+OR+bitcoin+OR+ethereum+site:reuters.com&hl=en-US&gl=US&ceid=US:en",
+        "description": "Reuters crypto coverage via Google News — original wire reporting.",
+        "reliability_score": 96,
+    },
+    {
+        "name": "Bloomberg Crypto RSS",
+        "type": "rss",
+        "url": "https://news.google.com/rss/search?q=cryptocurrency+OR+bitcoin+OR+blockchain+site:bloomberg.com&hl=en-US&gl=US&ceid=US:en",
+        "description": "Bloomberg crypto coverage via Google News — financial market reporting.",
+        "reliability_score": 95,
+    },
+    {
+        "name": "AP News Crypto RSS",
+        "type": "rss",
+        "url": "https://news.google.com/rss/search?q=cryptocurrency+OR+bitcoin+OR+blockchain+site:apnews.com&hl=en-US&gl=US&ceid=US:en",
+        "description": "Associated Press crypto coverage — trusted wire service reporting.",
+        "reliability_score": 97,
+    },
+
+    # ── Google News Crypto Feed (aggregated original sources)
+    {
+        "name": "Google News Crypto",
+        "type": "rss",
+        "url": "https://news.google.com/rss/search?q=cryptocurrency+bitcoin+ethereum&hl=en-US&gl=US&ceid=US:en",
+        "description": "Google News aggregation — top crypto stories from original sources worldwide.",
+        "reliability_score": 80,
+    },
+
+    # ── GitHub / Technical Sources ──────────────────────────
+    {
+        "name": "Bitcoin Core Releases",
+        "type": "rss",
+        "url": "https://github.com/bitcoin/bitcoin/releases.atom",
+        "description": "Official Bitcoin Core software releases — protocol changes and updates.",
+        "reliability_score": 99,
     },
 ]
 
 
 class Command(BaseCommand):
-    help = "Seed the database with starter news sources."
+    help = "Seed the database with original news sources (not competitors)."
 
     def handle(self, *args, **options):
         created_count = 0

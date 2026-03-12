@@ -126,7 +126,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
             obj.get_status_display(),
         )
 
-    @admin.display(description="Images")
+    @admin.display(description="Images") 
     def images_preview(self, obj):
         if not obj.images:
             return "No images"

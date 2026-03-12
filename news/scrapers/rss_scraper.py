@@ -1,15 +1,18 @@
 """
 RSS feed scraper for The Crypto Times.
 Parses RSS/Atom feeds and creates NewsArticle entries.
+Only imports crypto-related articles.
 """
 
 import logging
 import hashlib
+from datetime import datetime, timedelta, timezone as dt_tz
 import feedparser
 from django.utils import timezone
 from django.utils.html import strip_tags
 
 from news.models import NewsArticle, Source
+from news.scrapers.crypto_filter import is_crypto_related
 
 logger = logging.getLogger("news")
 
@@ -67,7 +70,20 @@ def scrape_rss_source(source: Source) -> list[NewsArticle]:
         logger.warning("Feed %s returned errors: %s", source.url, feed.bozo_exception)
         return created
 
+    # Only fetch articles from last 24 hours
+    cutoff = datetime.now(dt_tz.utc) - timedelta(hours=24)
+
     for entry in feed.entries[:20]:  # Process latest 20
+        # Skip old articles
+        published = entry.get("published_parsed") or entry.get("updated_parsed")
+        if published:
+            try:
+                entry_time = datetime(*published[:6], tzinfo=dt_tz.utc)
+                if entry_time < cutoff:
+                    continue
+            except Exception:
+                pass
+
         external_id = _generate_external_id(entry, source)
 
         # Skip duplicates
@@ -88,6 +104,11 @@ def scrape_rss_source(source: Source) -> list[NewsArticle]:
         summary = strip_tags(content_html)[:300].strip()
         if not summary:
             summary = strip_tags(entry.get("summary", ""))[:300].strip()
+
+        # ── CRYPTO FILTER — skip non-crypto articles ────────
+        if not is_crypto_related(title, summary):
+            logger.debug("Skipping non-crypto article: %s", title[:60])
+            continue
 
         images = _extract_images(entry)
 
