@@ -16,7 +16,7 @@ from news.scrapers.crypto_filter import is_crypto_related
 logger = logging.getLogger("news")
 
 # Only fetch articles from the last N hours
-MAX_AGE_HOURS = 6
+MAX_AGE_HOURS = 48
 
 
 def _extract_images(entry) -> list[str]:
