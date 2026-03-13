@@ -42,6 +42,13 @@ def fetch_all_sources():
             logger.info("Fetched %d new articles from '%s'", len(articles), source.name)
 
             for article in articles:
+
+                # Double-check crypto relevance
+                from news.scrapers.crypto_filter import is_crypto_related
+                if not is_crypto_related(article.title, article.summary):
+                    article.delete()
+                    continue
+                
                 # Run AI verification
                 try:
                     verify_article(article)

@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.utils.html import strip_tags
 
 from news.models import NewsArticle, Source
+from news.scrapers.crypto_filter import is_crypto_related
 
 logger = logging.getLogger("news")
 
@@ -69,6 +70,10 @@ def scrape_website_source(source: Source) -> list[NewsArticle]:
 
         title = article_data.get("title") or link_title
         if not title:
+            continue
+
+        # Skip non-crypto articles
+        if not is_crypto_related(title, article_data.get("summary", "")):
             continue
 
         article = NewsArticle.objects.create(
