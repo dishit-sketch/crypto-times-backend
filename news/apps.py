@@ -1,4 +1,5 @@
 import os
+import threading
 from django.apps import AppConfig
 
 
@@ -9,19 +10,26 @@ class NewsConfig(AppConfig):
 
     def ready(self):
         if os.environ.get("RUN_MAIN") == "true" or not os.environ.get("RUN_MAIN"):
-            try:
-                self._auto_seed_sources()
-            except Exception as e:
-                print(f"[CryptoTimes] Auto-seed failed: {e}")
+            # Run in background thread so it doesn't block server startup
+            thread = threading.Thread(target=self._background_init, daemon=True)
+            thread.start()
 
-            try:
-                from news.scheduler import start
-                start()
-            except Exception as e:
-                print(f"[CryptoTimes] Scheduler failed: {e}")
+    def _background_init(self):
+        import time
+        time.sleep(5)  # Wait for server to fully start
+
+        try:
+            self._auto_seed_sources()
+        except Exception as e:
+            print(f"[CryptoTimes] Auto-seed failed: {e}")
+
+        try:
+            from news.scheduler import start
+            start()
+        except Exception as e:
+            print(f"[CryptoTimes] Scheduler failed: {e}")
 
     def _auto_seed_sources(self):
-        """Auto-add all 100+ sources if database has fewer than 50."""
         from news.models import Source
         from news.sources_list import STARTER_SOURCES
 
@@ -29,8 +37,7 @@ class NewsConfig(AppConfig):
         if current_count >= 50:
             return
 
-        print(f"[CryptoTimes] Found {current_count} sources — seeding {len(STARTER_SOURCES)} original sources...")
-
+        print(f"[CryptoTimes] Seeding sources...")
         count = 0
         for data in STARTER_SOURCES:
             _, created = Source.objects.get_or_create(
@@ -39,5 +46,4 @@ class NewsConfig(AppConfig):
             )
             if created:
                 count += 1
-
-        print(f"[CryptoTimes] Seeded {count} new sources. Total: {Source.objects.count()}")
+        print(f"[CryptoTimes] Seeded {count} sources.")
