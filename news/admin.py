@@ -314,7 +314,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
         count = queryset.update(status=ArticleStatus.REJECTED, is_breaking=False)
         self.message_user(request, f"❌ {count} article(s) rejected.")
 
-    @admin.action(description="✅ Auto-approve all REAL (confidence > 80%)")
+    @admin.action(description="✅ Auto-approve all REAL with high confidence")
     def approve_all_real(self, request, queryset):
         count = 0
         for article in queryset.filter(
@@ -326,7 +326,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
             count += 1
         self.message_user(request, f"✅ Auto-approved {count} REAL article(s) with >80% confidence.")
 
-    @admin.action(description="🤖 Re-verify + regenerate with AI")
+    @admin.action(description="🤖 Re-verify with AI")
     def re_verify_selected(self, request, queryset):
         from news.ai.verifier import verify_article
 
@@ -339,7 +339,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
                 self.message_user(request, f"Error: {article.title[:40]}: {e}", level="error")
         self.message_user(request, f"🤖 {count} article(s) re-verified with AI.")
 
-    @admin.action(description="📝 Regenerate content + images with AI")
+    @admin.action(description="📝 Regenerate content and images with AI")
     def regenerate_content_selected(self, request, queryset):
         from news.ai.verifier import generate_article_content
 
