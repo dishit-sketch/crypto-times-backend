@@ -16,7 +16,7 @@ from news.scrapers.crypto_filter import is_crypto_related
 logger = logging.getLogger("news")
 
 # Only fetch articles from the last N hours
-MAX_AGE_HOURS = 12
+MAX_AGE_HOURS = 6
 
 
 def _extract_images(entry) -> list[str]:
@@ -112,6 +112,11 @@ def scrape_rss_source(source: Source) -> list[NewsArticle]:
         # ── Dedup filter ────────────────────────────────────
         external_id = _generate_external_id(entry, source)
         if NewsArticle.objects.filter(external_id=external_id).exists():
+            skipped_dupe += 1
+            continue
+
+        # Also check title dedup across all sources
+        if NewsArticle.objects.filter(title=title.strip()).exists():
             skipped_dupe += 1
             continue
 
