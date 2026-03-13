@@ -5,33 +5,31 @@ from django.apps import AppConfig
 class NewsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "news"
-    verbose_name = "News & Verification"
+    verbose_name = "CryptoTimes News Engine"
 
     def ready(self):
-        # Only run in the main process
         if os.environ.get("RUN_MAIN") == "true" or not os.environ.get("RUN_MAIN"):
             try:
                 self._auto_seed_sources()
             except Exception as e:
-                print(f"Auto-seed sources failed: {e}")
+                print(f"[CryptoTimes] Auto-seed failed: {e}")
 
             try:
                 from news.scheduler import start
                 start()
             except Exception as e:
-                print(f"Scheduler start failed: {e}")
+                print(f"[CryptoTimes] Scheduler failed: {e}")
 
     def _auto_seed_sources(self):
-        """Automatically add default sources if the database is empty."""
+        """Auto-add all 100+ sources if database has fewer than 50."""
         from news.models import Source
+        from news.sources_list import STARTER_SOURCES
 
-        # Only seed if no sources exist yet
-        if Source.objects.exists():
+        current_count = Source.objects.count()
+        if current_count >= 50:
             return
 
-        print("[Auto-Seed] No sources found — adding default crypto sources...")
-
-        from news.management.commands.seed_sources import STARTER_SOURCES
+        print(f"[CryptoTimes] Found {current_count} sources — seeding {len(STARTER_SOURCES)} original sources...")
 
         count = 0
         for data in STARTER_SOURCES:
@@ -41,6 +39,5 @@ class NewsConfig(AppConfig):
             )
             if created:
                 count += 1
-                print(f"  + {data['name']}")
 
-        print(f"[Auto-Seed] Done — {count} sources added.")
+        print(f"[CryptoTimes] Seeded {count} new sources. Total: {Source.objects.count()}")

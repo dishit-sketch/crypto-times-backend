@@ -1,6 +1,6 @@
 """
-Django settings for The Crypto Times backend.
-Production-ready with Render + Vercel integration.
+Django settings for CryptoTimes.io backend.
+Production-ready with Alibaba AI + Render + Vercel.
 """
 
 import os
@@ -25,12 +25,11 @@ ALLOWED_HOSTS = [
     if h.strip()
 ]
 
-# Allow Render's hostname automatically
 RENDER_EXTERNAL_HOSTNAME = os.getenv("RENDER_EXTERNAL_HOSTNAME")
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-# ── Application Definition ─────────────────────────────────
+# ── Apps ────────────────────────────────────────────────────
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -38,11 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Third-party
     "rest_framework",
     "corsheaders",
     "django_filters",
-    # Local
     "news",
     "api",
 ]
@@ -98,27 +95,21 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# ── Internationalization ────────────────────────────────────
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# ── Static Files (WhiteNoise for production) ────────────────
+# ── Static Files ────────────────────────────────────────────
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ═══════════════════════════════════════════════════════════
-# CORS — Frontend ↔ Backend Connection
-# ═══════════════════════════════════════════════════════════
+# ── CORS ────────────────────────────────────────────────────
 CORS_ALLOW_ALL_ORIGINS = DEBUG
-
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
@@ -127,21 +118,10 @@ CORS_ALLOWED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
-
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "authorization",
-    "content-type",
-    "origin",
-    "x-csrftoken",
-    "x-requested-with",
-]
-
+CORS_ALLOW_HEADERS = ["accept", "authorization", "content-type", "origin", "x-csrftoken", "x-requested-with"]
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 
-# ═══════════════════════════════════════════════════════════
-# REST Framework — CamelCase JSON for Next.js frontend
-# ═══════════════════════════════════════════════════════════
+# ── REST Framework ──────────────────────────────────────────
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
@@ -150,12 +130,8 @@ REST_FRAMEWORK = {
         "rest_framework.filters.SearchFilter",
         "rest_framework.filters.OrderingFilter",
     ],
-    "DEFAULT_THROTTLE_CLASSES": [
-        "rest_framework.throttling.AnonRateThrottle",
-    ],
-    "DEFAULT_THROTTLE_RATES": {
-        "anon": "100/minute",
-    },
+    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/minute"},
     "DEFAULT_RENDERER_CLASSES": [
         "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
         "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
@@ -167,29 +143,34 @@ REST_FRAMEWORK = {
     ],
 }
 
-# ── Crypto Times Config ────────────────────────────────────
+# ═══════════════════════════════════════════════════════════
+# CRYPTOTIMES AI CONFIGURATION
+# ═══════════════════════════════════════════════════════════
+# Provider: mock | alibaba | anthropic | openai
 AI_PROVIDER = os.getenv("AI_PROVIDER", "mock")
+
+# Alibaba Cloud / Qwen (PRIMARY)
+ALIBABA_API_KEY = os.getenv("ALIBABA_API_KEY", "")
+
+# Fallback providers
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+
+# Other config
 UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY", "")
 FETCH_INTERVAL_MINUTES = int(os.getenv("FETCH_INTERVAL_MINUTES", "5"))
 TWITTER_BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN", "")
+ZAPIER_WEBHOOK_URL = os.getenv("ZAPIER_WEBHOOK_URL", "")
 
-# ── Logging (console only — no file logging on Render) ─────
+# ── Logging ─────────────────────────────────────────────────
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "verbose": {
-            "format": "[{asctime}] {levelname} {name}: {message}",
-            "style": "{",
-        },
+        "verbose": {"format": "[{asctime}] {levelname} {name}: {message}", "style": "{"},
     },
     "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
+        "console": {"class": "logging.StreamHandler", "formatter": "verbose"},
     },
     "loggers": {
         "news": {"handlers": ["console"], "level": "INFO"},
