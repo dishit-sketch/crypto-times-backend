@@ -19,4 +19,5 @@ urlpatterns = [
     path("admin/add-source", views.add_source, name="admin-add-source"),
     path("admin/remove-source/<uuid:source_id>", views.remove_source, name="admin-remove-source"),
     path("admin/pending", views.PendingArticlesView.as_view(), name="admin-pending"),
+    path("admin/recent-articles", views.recent_articles, name="admin-recent-articles"),
 ]

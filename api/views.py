@@ -17,6 +17,7 @@ Admin endpoints (staff auth):
 """
 
 import logging
+from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
@@ -290,3 +291,41 @@ class PendingArticlesView(generics.ListAPIView):
         return NewsArticle.objects.filter(
             status=ArticleStatus.PENDING,
         ).select_related("source").order_by("-created_at")
+    
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def recent_articles(request):
+    """
+    GET /api/admin/recent-articles?since=<ISO timestamp>
+    Returns articles created after the given timestamp.
+    Used by the admin notification system.
+    """
+    since = request.query_params.get("since")
+    qs = NewsArticle.objects.select_related("source").order_by("-created_at")[:20]
+
+    if since:
+        try:
+            since_dt = parse_datetime(since)
+            if since_dt:
+                qs = NewsArticle.objects.filter(
+                    created_at__gt=since_dt
+                ).select_related("source").order_by("-created_at")[:10]
+        except (ValueError, TypeError):
+            pass
+
+    articles = []
+    for a in qs:
+        articles.append({
+            "id": str(a.id),
+            "title": a.title,
+            "summary": a.summary[:200] if a.summary else "",
+            "source_name": a.source.name if a.source else "",
+            "images": a.images if isinstance(a.images, list) else [],
+            "ai_verdict": a.ai_verdict,
+            "confidence_score": a.confidence_score,
+            "is_breaking": a.is_breaking,
+            "status": a.status,
+            "created_at": a.created_at.isoformat(),
+        })
+
+    return Response({"articles": articles})
