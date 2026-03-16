@@ -1,260 +1,113 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base.html" %}
 {% load static %}
 
 {% block extrahead %}
 {{ block.super }}
 <style>
-    /* ── Notification Toast ─────────────────────────────── */
-    #ct-notifications {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 99999;
-        display: flex;
-        flex-direction: column-reverse;
-        gap: 10px;
-        max-height: 80vh;
-        overflow: hidden;
-        pointer-events: none;
-    }
-
-    .ct-toast {
-        pointer-events: auto;
-        width: 380px;
-        background: #0d1117;
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 14px;
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        animation: slideInRight 0.5s ease-out;
-        cursor: pointer;
-        transition: transform 0.2s, opacity 0.2s;
-    }
-
-    .ct-toast:hover {
-        transform: translateY(-2px);
-        border-color: #f7931a33;
-    }
-
-    .ct-toast.removing {
-        animation: slideOutRight 0.4s ease-in forwards;
-    }
-
-    .ct-toast-inner {
-        display: flex;
-        gap: 12px;
-        padding: 14px;
-    }
-
-    .ct-toast-img {
-        width: 70px;
-        height: 50px;
-        border-radius: 8px;
-        object-fit: cover;
-        flex-shrink: 0;
-        background: #1a1a2e;
-    }
-
-    .ct-toast-content {
-        flex: 1;
-        min-width: 0;
-    }
-
-    .ct-toast-label {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1.5px;
-        margin-bottom: 4px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    .ct-toast-label.new { color: #f7931a; }
-    .ct-toast-label.breaking { color: #ff4757; }
-
-    .ct-toast-label .dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        animation: pulse 1.5s infinite;
-    }
-
-    .ct-toast-label.new .dot { background: #f7931a; }
-    .ct-toast-label.breaking .dot { background: #ff4757; }
-
-    .ct-toast-title {
-        font-size: 13px;
-        font-weight: 600;
-        color: #e8eaed;
-        line-height: 1.3;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .ct-toast-meta {
-        font-size: 10px;
-        color: #6b7280;
-        margin-top: 4px;
-    }
-
-    .ct-toast-close {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 20px;
-        height: 20px;
-        border: none;
-        background: rgba(255,255,255,0.05);
-        color: #6b7280;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .ct-toast-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
-
-    .ct-toast-progress {
-        height: 2px;
-        background: #1a1a2e;
-    }
-
-    .ct-toast-progress div {
-        height: 100%;
-        border-radius: 2px;
-        animation: shrink 8s linear forwards;
-    }
-
-    .ct-toast.new .ct-toast-progress div { background: #f7931a55; }
-    .ct-toast.breaking .ct-toast-progress div { background: #ff475799; }
-
-    /* ── BREAKING NEWS FULL SCREEN FLASH ──────────────── */
-    #ct-breaking-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 999999;
-        display: none;
-        pointer-events: none;
-    }
-
-    #ct-breaking-overlay.active {
-        display: block;
-        animation: breakingFlash 3s ease-out forwards;
-    }
-
-    #ct-breaking-overlay .flash {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(ellipse at center, rgba(255,71,87,0.3) 0%, transparent 70%);
-        animation: flashPulse 0.5s ease-in-out 6;
-    }
-
-    #ct-breaking-overlay .border-flash {
-        position: absolute;
-        inset: 0;
-        border: 4px solid #ff4757;
-        border-radius: 0;
-        animation: borderPulse 0.3s ease-in-out 10;
-        box-shadow: inset 0 0 100px rgba(255,71,87,0.15), 0 0 100px rgba(255,71,87,0.15);
-    }
-
-    #ct-breaking-banner {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999999;
-        background: linear-gradient(90deg, #ff4757, #c0392b, #ff4757);
-        background-size: 200% 100%;
-        animation: gradientMove 2s linear infinite;
-        padding: 12px 20px;
-        text-align: center;
-        display: none;
-        box-shadow: 0 4px 30px rgba(255,71,87,0.5);
-    }
-
-    #ct-breaking-banner.active {
-        display: block;
-        animation: slideDown 0.3s ease-out, gradientMove 2s linear infinite;
-    }
-
-    #ct-breaking-banner .text {
-        color: #fff;
-        font-size: 14px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
-
-    #ct-breaking-banner .headline {
-        color: #fff;
-        font-size: 16px;
-        font-weight: 600;
-        margin-top: 4px;
-        letter-spacing: 0;
-        text-transform: none;
-    }
-
-    /* ── Animations ───────────────────────────────────── */
-    @keyframes slideInRight {
-        from { opacity: 0; transform: translateX(100%); }
-        to { opacity: 1; transform: translateX(0); }
-    }
-    @keyframes slideOutRight {
-        from { opacity: 1; transform: translateX(0); }
-        to { opacity: 0; transform: translateX(110%); }
-    }
-    @keyframes shrink {
-        from { width: 100%; }
-        to { width: 0%; }
-    }
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
-    }
-    @keyframes breakingFlash {
-        0% { opacity: 1; }
-        100% { opacity: 0; }
-    }
-    @keyframes flashPulse {
-        0%, 100% { opacity: 0; }
-        50% { opacity: 1; }
-    }
-    @keyframes borderPulse {
-        0%, 100% { opacity: 0; border-color: #ff4757; }
-        50% { opacity: 1; border-color: #ff6b81; }
-    }
-    @keyframes gradientMove {
-        0% { background-position: 0% 50%; }
-        100% { background-position: 200% 50%; }
-    }
-    @keyframes slideDown {
-        from { transform: translateY(-100%); }
-        to { transform: translateY(0); }
-    }
+#ct-notifications {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    max-height: 80vh;
+    overflow: hidden;
+    pointer-events: none;
+}
+.ct-toast {
+    pointer-events: auto;
+    width: 360px;
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    animation: slideInRight 0.5s ease-out;
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
+}
+.ct-toast:hover { transform: translateY(-2px); border-color: #f7931a55; }
+.ct-toast.removing { animation: slideOutRight 0.4s ease-in forwards; }
+.ct-toast-inner { display: flex; gap: 12px; padding: 14px; }
+.ct-toast-img {
+    width: 64px; height: 48px;
+    border-radius: 8px; object-fit: cover;
+    flex-shrink: 0; background: #1a1a2e;
+}
+.ct-toast-content { flex: 1; min-width: 0; }
+.ct-toast-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 4px; display: flex;
+    align-items: center; gap: 6px;
+}
+.ct-toast-label.new { color: #f7931a; }
+.ct-toast-label.breaking { color: #ff4757; }
+.ct-toast-label .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%; animation: pulse 1.5s infinite;
+}
+.ct-toast-label.new .dot { background: #f7931a; }
+.ct-toast-label.breaking .dot { background: #ff4757; }
+.ct-toast-title {
+    font-size: 13px; font-weight: 600;
+    color: #e8eaed; line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.ct-toast-meta { font-size: 10px; color: #6b7280; margin-top: 4px; }
+.ct-toast-close {
+    position: absolute; top: 8px; right: 8px;
+    width: 20px; height: 20px;
+    border: none; background: rgba(255,255,255,0.05);
+    color: #6b7280; border-radius: 4px;
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+}
+.ct-toast-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.ct-toast-progress { height: 2px; background: #1a1a2e; }
+.ct-toast-progress div { height: 100%; animation: shrink 8s linear forwards; }
+.ct-toast.new .ct-toast-progress div { background: #f7931a88; }
+.ct-toast.breaking .ct-toast-progress div { background: #ff475799; }
+#ct-breaking-banner {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 9999999;
+    background: #cc0000;
+    padding: 12px 20px; text-align: center;
+    display: none;
+    box-shadow: 0 4px 30px rgba(255,71,87,0.5);
+}
+#ct-breaking-banner.active { display: block; }
+#ct-breaking-banner .text {
+    color: #fff; font-size: 14px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 2px;
+}
+#ct-breaking-banner .headline {
+    color: #fff; font-size: 15px;
+    font-weight: 600; margin-top: 4px;
+}
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(100%); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideOutRight {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(110%); }
+}
+@keyframes shrink { from { width: 100%; } to { width: 0%; } }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
 </style>
 {% endblock %}
 
-{% block content %}
+{% block footer %}
 {{ block.super }}
 
-<!-- Notification container -->
 <div id="ct-notifications"></div>
-
-<!-- Breaking news overlay -->
-<div id="ct-breaking-overlay">
-    <div class="flash"></div>
-    <div class="border-flash"></div>
-</div>
-
-<!-- Breaking news banner -->
 <div id="ct-breaking-banner">
     <div class="text">🚨 BREAKING NEWS 🚨</div>
     <div class="headline" id="ct-breaking-headline"></div>
@@ -262,41 +115,31 @@
 
 <script>
 (function() {
-    const POLL_INTERVAL = 15000; // 15 seconds
-    const TOAST_DURATION = 8000;
-    const BREAKING_FLASH_DURATION = 5000;
-    const BREAKING_BANNER_DURATION = 15000;
+    var POLL_INTERVAL = 15000;
+    var TOAST_DURATION = 8000;
+    var lastCheckTime = new Date().toISOString();
+    var knownIds = [];
 
-    let lastCheckTime = new Date().toISOString();
-    let knownIds = new Set();
-
-    // Request desktop notification permission
     if ('Notification' in window && Notification.permission === 'default') {
         Notification.requestPermission();
     }
 
-    // ── Play notification sound ────────────────────────
     function playSound(type) {
         try {
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
+            var ctx = new (window.AudioContext || window.webkitAudioContext)();
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
             osc.connect(gain);
             gain.connect(ctx.destination);
-
             if (type === 'breaking') {
-                // Urgent alarm sound
                 osc.frequency.setValueAtTime(880, ctx.currentTime);
                 osc.frequency.setValueAtTime(660, ctx.currentTime + 0.15);
                 osc.frequency.setValueAtTime(880, ctx.currentTime + 0.3);
-                osc.frequency.setValueAtTime(660, ctx.currentTime + 0.45);
-                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.6);
                 gain.gain.setValueAtTime(0.3, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.6);
                 osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.8);
+                osc.stop(ctx.currentTime + 0.6);
             } else {
-                // Gentle chime
                 osc.frequency.setValueAtTime(523, ctx.currentTime);
                 osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
                 gain.gain.setValueAtTime(0.15, ctx.currentTime);
@@ -307,139 +150,108 @@
         } catch(e) {}
     }
 
-    // ── Show toast notification ────────────────────────
     function showToast(article, isBreaking) {
-        const container = document.getElementById('ct-notifications');
-        const type = isBreaking ? 'breaking' : 'new';
-        const image = (article.images && article.images.length > 0)
-            ? article.images[0]
-            : '';
+        var container = document.getElementById('ct-notifications');
+        if (!container) return;
+        var type = isBreaking ? 'breaking' : 'new';
+        var image = (article.images && article.images.length > 0) ? article.images[0] : '';
+        var imgHtml = image
+            ? '<img class="ct-toast-img" src="' + image + '" alt="">'
+            : '<div class="ct-toast-img" style="display:flex;align-items:center;justify-content:center;color:#555;font-size:20px;">📰</div>';
 
-        const toast = document.createElement('div');
-        toast.className = `ct-toast ${type}`;
-        toast.style.position = 'relative';
+        var toast = document.createElement('div');
+        toast.className = 'ct-toast ' + type;
+        toast.innerHTML =
+            '<div class="ct-toast-inner">' +
+                imgHtml +
+                '<div class="ct-toast-content">' +
+                    '<div class="ct-toast-label ' + type + '">' +
+                        '<span class="dot"></span>' +
+                        (isBreaking ? '🚨 BREAKING' : '📰 NEW ARTICLE') +
+                    '</div>' +
+                    '<div class="ct-toast-title">' + (article.title || 'New Article') + '</div>' +
+                    '<div class="ct-toast-meta">' + (article.source_name || '') + ' · Just now</div>' +
+                '</div>' +
+            '</div>' +
+            '<button class="ct-toast-close">×</button>' +
+            '<div class="ct-toast-progress"><div></div></div>';
 
-        const imgHtml = image
-            ? `<img class="ct-toast-img" src="${image}" alt="" />`
-            : `<div class="ct-toast-img" style="display:flex;align-items:center;justify-content:center;color:#555;font-size:10px;">📰</div>`;
-
-        toast.innerHTML = `
-            <div class="ct-toast-inner">
-                ${imgHtml}
-                <div class="ct-toast-content">
-                    <div class="ct-toast-label ${type}">
-                        <span class="dot"></span>
-                        ${isBreaking ? '🚨 BREAKING' : '📰 NEW ARTICLE'}
-                    </div>
-                    <div class="ct-toast-title">${article.title || 'New Article'}</div>
-                    <div class="ct-toast-meta">${article.source_name || article.source || ''} · Just now</div>
-                </div>
-            </div>
-            <button class="ct-toast-close" onclick="this.parentElement.classList.add('removing');setTimeout(()=>this.parentElement.remove(),400)">×</button>
-            <div class="ct-toast-progress"><div></div></div>
-        `;
-
-        // Click to open article in admin
-        toast.addEventListener('click', function(e) {
-            if (e.target.classList.contains('ct-toast-close')) return;
+        toast.querySelector('.ct-toast-close').onclick = function(e) {
+            e.stopPropagation();
+            toast.classList.add('removing');
+            setTimeout(function() { if (toast.parentNode) toast.remove(); }, 400);
+        };
+        toast.onclick = function() {
             window.open('/admin/news/newsarticle/' + article.id + '/change/', '_blank');
-        });
+        };
 
         container.appendChild(toast);
+        playSound(isBreaking ? 'breaking' : 'normal');
 
-        // Auto remove after duration
-        setTimeout(() => {
-            if (toast.parentElement) {
+        setTimeout(function() {
+            if (toast.parentNode) {
                 toast.classList.add('removing');
-                setTimeout(() => toast.remove(), 400);
+                setTimeout(function() { if (toast.parentNode) toast.remove(); }, 400);
             }
         }, TOAST_DURATION);
 
-        // Play sound
-        playSound(isBreaking ? 'breaking' : 'normal');
-
-        // Desktop notification
         if ('Notification' in window && Notification.permission === 'granted') {
-            const notif = new Notification(
-                isBreaking ? '🚨 BREAKING: ' + article.title : '📰 ' + article.title,
-                {
-                    body: article.summary || '',
-                    icon: image || '/static/admin/img/icon-changelink.svg',
-                    tag: article.id,
-                    requireInteraction: isBreaking,
-                }
-            );
-            notif.onclick = function() {
-                window.focus();
-                window.open('/admin/news/newsarticle/' + article.id + '/change/', '_blank');
-            };
+            try {
+                new Notification(
+                    isBreaking ? '🚨 BREAKING: ' + article.title : '📰 ' + article.title,
+                    { body: article.source_name || '', icon: image || '' }
+                );
+            } catch(e) {}
         }
     }
 
-    // ── Show breaking news explosion ───────────────────
-    function showBreakingExplosion(article) {
-        // Red flash overlay
-        const overlay = document.getElementById('ct-breaking-overlay');
-        overlay.classList.remove('active');
-        void overlay.offsetWidth; // Force reflow
-        overlay.classList.add('active');
-
-        setTimeout(() => overlay.classList.remove('active'), BREAKING_FLASH_DURATION);
-
-        // Top banner
-        const banner = document.getElementById('ct-breaking-banner');
-        const headline = document.getElementById('ct-breaking-headline');
+    function showBreaking(article) {
+        var banner = document.getElementById('ct-breaking-banner');
+        var headline = document.getElementById('ct-breaking-headline');
+        if (!banner || !headline) return;
         headline.textContent = article.title;
         banner.classList.add('active');
 
-        setTimeout(() => banner.classList.remove('active'), BREAKING_BANNER_DURATION);
-
-        // Flash page title
-        let flash = true;
-        const originalTitle = document.title;
-        const titleFlash = setInterval(() => {
-            document.title = flash ? '🚨 BREAKING NEWS 🚨' : originalTitle;
-            flash = !flash;
+        var flashes = 0;
+        var orig = document.title;
+        var titleTimer = setInterval(function() {
+            document.title = flashes % 2 === 0 ? '🚨 BREAKING 🚨' : orig;
+            flashes++;
+            if (flashes > 20) { clearInterval(titleTimer); document.title = orig; }
         }, 500);
-        setTimeout(() => {
-            clearInterval(titleFlash);
-            document.title = originalTitle;
-        }, BREAKING_BANNER_DURATION);
+
+        setTimeout(function() {
+            banner.classList.remove('active');
+            clearInterval(titleTimer);
+            document.title = orig;
+        }, 15000);
     }
 
-    // ── Poll for new articles ──────────────────────────
-    async function checkForNewArticles() {
-        try {
-            const resp = await fetch('/api/admin/recent-articles?since=' + encodeURIComponent(lastCheckTime));
-            if (!resp.ok) return;
-            const data = await resp.json();
-
-            if (data.articles && data.articles.length > 0) {
-                for (const article of data.articles) {
-                    if (knownIds.has(article.id)) continue;
-                    knownIds.add(article.id);
-
-                    const isBreaking = article.is_breaking || false;
-
-                    showToast(article, isBreaking);
-
-                    if (isBreaking) {
-                        showBreakingExplosion(article);
-                    }
-                }
+    function poll() {
+        fetch('/api/admin/recent-articles?since=' + encodeURIComponent(lastCheckTime))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
                 lastCheckTime = new Date().toISOString();
-            }
-        } catch(e) {
-            // Silent fail
-        }
+                if (!data.articles) return;
+                data.articles.forEach(function(article) {
+                    if (knownIds.indexOf(article.id) !== -1) return;
+                    knownIds.push(article.id);
+                    var isBreaking = article.is_breaking || false;
+                    showToast(article, isBreaking);
+                    if (isBreaking) showBreaking(article);
+                });
+            })
+            .catch(function() {});
     }
 
-    // Start polling
-    setInterval(checkForNewArticles, POLL_INTERVAL);
-    // First check after 3 seconds
-    setTimeout(checkForNewArticles, 3000);
+    window.showNotification = function(article) {
+        showToast(article, article.is_breaking || false);
+    };
 
-    console.log('[CryptoTimes] Admin notification system active — polling every ' + (POLL_INTERVAL/1000) + 's');
+    setTimeout(poll, 3000);
+    setInterval(poll, POLL_INTERVAL);
+
+    console.log('[CryptoTimes] Admin notification system active — polling every 15s');
 })();
 </script>
 {% endblock %}
