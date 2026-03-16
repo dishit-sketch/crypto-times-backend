@@ -73,7 +73,7 @@ class NewsArticle(models.Model):
     images = models.JSONField(
         default=list,
         blank=True,
-        help_text='JSON list of image URLs, e.g. ["https://…/a.jpg", "https://…/b.jpg"]',
+        help_text='JSON list of image URLs.',
     )
 
     # AI verification
@@ -85,6 +85,13 @@ class NewsArticle(models.Model):
     confidence_score = models.FloatField(
         default=0,
         help_text="AI confidence 0–100.",
+    )
+
+    # AI key points — 3 bullet points summarizing the article
+    key_points = models.JSONField(
+        default=list,
+        blank=True,
+        help_text='AI-generated key points, e.g. ["point 1", "point 2", "point 3"]',
     )
 
     # Human moderation
@@ -132,7 +139,6 @@ class NewsArticle(models.Model):
         """Approve the article for public display."""
         self.status = ArticleStatus.APPROVED
         self.published_at = timezone.now()
-        # Breaking logic
         if (
             self.ai_verdict == AIVerdict.REAL
             and self.confidence_score > 90
@@ -168,7 +174,7 @@ class VerificationLog(models.Model):
         max_length=50,
         blank=True,
         default="",
-        help_text="Which AI provider was used (mock / anthropic / openai).",
+        help_text="Which AI provider was used.",
     )
     raw_response = models.JSONField(
         default=dict,

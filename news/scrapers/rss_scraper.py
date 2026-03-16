@@ -114,6 +114,20 @@ def scrape_rss_source(source: Source) -> list[NewsArticle]:
         if NewsArticle.objects.filter(external_id=external_id).exists():
             skipped_dupe += 1
             continue
+         # Fuzzy title match — skip if 80% similar title exists
+        from difflib import SequenceMatcher
+        similar = False
+        recent_titles = NewsArticle.objects.filter(
+            created_at__gte=timezone.now() - timedelta(hours=48)
+        ).values_list("title", flat=True)[:200]
+        for existing_title in recent_titles:
+            ratio = SequenceMatcher(None, title.lower(), existing_title.lower()).ratio()
+            if ratio > 0.8:
+                similar = True
+                break
+        if similar:
+            skipped_dupe += 1
+            continue
 
         # Also check title dedup across all sources
         if NewsArticle.objects.filter(title=title.strip()).exists():
