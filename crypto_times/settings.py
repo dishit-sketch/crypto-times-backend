@@ -157,6 +157,12 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
+# DEBUG — remove after fixing
+import sys
+print(f"[STARTUP] AI_PROVIDER={AI_PROVIDER}", file=sys.stderr)
+print(f"[STARTUP] GROQ_KEY_SET={bool(GROQ_API_KEY)}", file=sys.stderr)
+
+
 # Other config
 UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY", "")
 FETCH_INTERVAL_MINUTES = int(os.getenv("FETCH_INTERVAL_MINUTES", "5"))
