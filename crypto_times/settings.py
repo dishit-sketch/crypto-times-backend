@@ -146,7 +146,7 @@ REST_FRAMEWORK = {
 # ═══════════════════════════════════════════════════════════
 # CRYPTOTIMES AI CONFIGURATION
 # ═══════════════════════════════════════════════════════════
-# Provider: mock | alibaba | anthropic | openai
+# Provider: mock | alibaba | anthropic | openai | Groq
 AI_PROVIDER = os.getenv("AI_PROVIDER", "mock")
 
 # Alibaba Cloud / Qwen (PRIMARY)
@@ -155,6 +155,7 @@ ALIBABA_API_KEY = os.getenv("ALIBABA_API_KEY", "")
 # Fallback providers
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
 # Other config
 UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY", "")

@@ -2,19 +2,18 @@
 AI Verification + Content Generation for CryptoTimes.io
 
 Supports providers:
-  - mock:     Development mode (no API key needed)
-  - alibaba:  Alibaba Cloud Qwen (primary)
-  - anthropic: Claude API (fallback)
-  - openai:   GPT-4o (fallback)
+  - mock:      Development mode (no API key needed)
+  - groq:      Groq API - free, fast (recommended)
+  - alibaba:   Alibaba Cloud Qwen
+  - anthropic: Claude API
+  - openai:    GPT-4o
 
-Set AI_PROVIDER and ALIBABA_API_KEY in .env
+Set AI_PROVIDER and matching API key in .env
 """
 
 import json
 import hashlib
 import logging
-import random
-import re
 from dataclasses import dataclass, field
 
 from django.conf import settings
@@ -43,7 +42,7 @@ Analyze this article and:
 2. Give a confidence score 0-100
 3. Write a verification explanation (2-3 sentences)
 4. Write a professional news description (10-15 sentences) expanding on the content with crypto market context, written as a senior crypto journalist.
-5. Extract exactly 3 key points that summarize the most important takeaways from this article. Each key point should be 1-2 sentences.
+5. Extract exactly 3 key points that summarize the most important takeaways. Each key point should be 1-2 sentences.
 
 TITLE: {title}
 
@@ -61,13 +60,52 @@ Respond ONLY with valid JSON (no markdown fences):
 
 
 # ══════════════════════════════════════════════════════════
+# GROQ PROVIDER (free, fast)
+# ══════════════════════════════════════════════════════════
+
+def _verify_groq(title: str, content: str) -> VerificationResult:
+    import httpx
+
+    api_key = getattr(settings, "GROQ_API_KEY", "")
+    if not api_key:
+        logger.warning("GROQ_API_KEY not set, falling back to mock")
+        return _verify_mock(title, content)
+
+    prompt = _build_prompt(title, content)
+
+    response = httpx.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{"role": "user", "content": prompt}],
+            "max_tokens": 2000,
+            "temperature": 0.3,
+        },
+        timeout=60,
+    )
+    response.raise_for_status()
+    data = response.json()
+
+    text = data["choices"][0]["message"]["content"]
+    return _parse_ai_response(text, raw=data, provider="groq")
+
+
+# ══════════════════════════════════════════════════════════
 # ALIBABA QWEN PROVIDER
 # ══════════════════════════════════════════════════════════
 
 def _verify_alibaba(title: str, content: str) -> VerificationResult:
     import httpx
 
-    api_key = settings.ALIBABA_API_KEY
+    api_key = getattr(settings, "ALIBABA_API_KEY", "")
+    if not api_key:
+        logger.warning("ALIBABA_API_KEY not set, falling back to mock")
+        return _verify_mock(title, content)
+
     prompt = _build_prompt(title, content)
 
     response = httpx.post(
@@ -90,11 +128,11 @@ def _verify_alibaba(title: str, content: str) -> VerificationResult:
     return _parse_ai_response(text, raw=data, provider="alibaba")
 
 
-def _generate_images_alibaba(title: str, category: str = "") -> list[str]:
+def _generate_images_alibaba(title: str, category: str = "") -> list:
     import httpx
     import time
 
-    api_key = settings.ALIBABA_API_KEY
+    api_key = getattr(settings, "ALIBABA_API_KEY", "")
     if not api_key:
         return []
 
@@ -122,7 +160,6 @@ def _generate_images_alibaba(title: str, category: str = "") -> list[str]:
         )
         response.raise_for_status()
         task_data = response.json()
-
         task_id = task_data.get("output", {}).get("task_id")
         if not task_id:
             return []
@@ -136,13 +173,11 @@ def _generate_images_alibaba(title: str, category: str = "") -> list[str]:
             )
             status_data = status_resp.json()
             task_status = status_data.get("output", {}).get("task_status")
-
             if task_status == "SUCCEEDED":
                 results = status_data.get("output", {}).get("results", [])
                 return [r.get("url", "") for r in results if r.get("url")][:2]
             elif task_status == "FAILED":
                 return []
-
         return []
     except Exception as e:
         logger.error("Alibaba image error: %s", e)
@@ -202,11 +237,16 @@ def _verify_mock(title: str, content: str) -> VerificationResult:
 def _verify_anthropic(title: str, content: str) -> VerificationResult:
     import httpx
 
+    api_key = getattr(settings, "ANTHROPIC_API_KEY", "")
+    if not api_key:
+        logger.warning("ANTHROPIC_API_KEY not set, falling back to mock")
+        return _verify_mock(title, content)
+
     prompt = _build_prompt(title, content)
     response = httpx.post(
         "https://api.anthropic.com/v1/messages",
         headers={
-            "x-api-key": settings.ANTHROPIC_API_KEY,
+            "x-api-key": api_key,
             "anthropic-version": "2023-06-01",
             "content-type": "application/json",
         },
@@ -225,11 +265,16 @@ def _verify_anthropic(title: str, content: str) -> VerificationResult:
 def _verify_openai(title: str, content: str) -> VerificationResult:
     import httpx
 
+    api_key = getattr(settings, "OPENAI_API_KEY", "")
+    if not api_key:
+        logger.warning("OPENAI_API_KEY not set, falling back to mock")
+        return _verify_mock(title, content)
+
     prompt = _build_prompt(title, content)
     response = httpx.post(
         "https://api.openai.com/v1/chat/completions",
         headers={
-            "Authorization": f"Bearer {settings.OPENAI_API_KEY}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
         json={
@@ -289,6 +334,7 @@ def _parse_ai_response(text: str, raw: dict, provider: str) -> VerificationResul
 
 PROVIDERS = {
     "mock": _verify_mock,
+    "groq": _verify_groq,
     "alibaba": _verify_alibaba,
     "anthropic": _verify_anthropic,
     "openai": _verify_openai,
@@ -298,7 +344,7 @@ PROVIDERS = {
 def verify_article(article) -> VerificationResult:
     from news.models import VerificationLog
 
-    provider_name = settings.AI_PROVIDER
+    provider_name = getattr(settings, "AI_PROVIDER", "mock")
     provider_fn = PROVIDERS.get(provider_name, _verify_mock)
 
     logger.info("Verifying '%s' with provider=%s", article.title[:50], provider_name)
@@ -314,7 +360,6 @@ def verify_article(article) -> VerificationResult:
             raw={"error": str(e)},
         )
 
-    # Update article fields
     article.ai_verdict = result.verdict
     article.confidence_score = result.confidence
     update_fields = ["ai_verdict", "confidence_score", "updated_at"]
@@ -344,7 +389,7 @@ def verify_article(article) -> VerificationResult:
 
 
 def generate_article_content(article):
-    provider_name = settings.AI_PROVIDER
+    provider_name = getattr(settings, "AI_PROVIDER", "mock")
     provider_fn = PROVIDERS.get(provider_name, _verify_mock)
 
     logger.info("Regenerating content for '%s'", article.title[:50])
@@ -359,7 +404,7 @@ def generate_article_content(article):
     except Exception as e:
         logger.error("Content generation failed: %s", e)
 
-    if provider_name == "alibaba" and settings.ALIBABA_API_KEY:
+    if provider_name == "alibaba":
         try:
             new_images = _generate_images_alibaba(article.title, article.category)
             if new_images:
