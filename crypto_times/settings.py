@@ -8,7 +8,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
-load_dotenv()
+load_dotenv(override=False)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -147,7 +147,7 @@ REST_FRAMEWORK = {
 # CRYPTOTIMES AI CONFIGURATION
 # ═══════════════════════════════════════════════════════════
 # Provider: mock | alibaba | anthropic | openai | Groq
-AI_PROVIDER = os.getenv("AI_PROVIDER", "mock")
+AI_PROVIDER = os.getenv("AI_PROVIDER", "groq")
 
 # Alibaba Cloud / Qwen (PRIMARY)
 ALIBABA_API_KEY = os.getenv("ALIBABA_API_KEY", "")
