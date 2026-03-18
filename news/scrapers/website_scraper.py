@@ -7,6 +7,7 @@ import logging
 import hashlib
 import re
 import httpx
+from datetime import datetime, timedelta, timezone as dt_tz
 from bs4 import BeautifulSoup
 from django.utils import timezone
 from django.utils.html import strip_tags
@@ -26,10 +27,21 @@ ARTICLE_PATTERNS = [
 ]
 
 
-def scrape_website_source(source: Source) -> list[NewsArticle]:
+def scrape_website_source(source: Source) -> list:
     """Scrape a crypto website for new articles."""
     logger.info("Scraping website: %s (%s)", source.name, source.url)
     created = []
+
+    # ── Cutoff based on last_fetched_at ──────────────────────
+    # New source → only fetch last 1 hour to avoid flood of old articles
+    # Existing source → fetch since last fetch time
+    if source.last_fetched_at:
+        cutoff = source.last_fetched_at
+        if cutoff.tzinfo is None:
+            cutoff = cutoff.replace(tzinfo=dt_tz.utc)
+    else:
+        cutoff = datetime.now(dt_tz.utc) - timedelta(hours=1)
+        logger.info("New source '%s' — only fetching last 1 hour", source.name)
 
     try:
         resp = httpx.get(
@@ -72,6 +84,15 @@ def scrape_website_source(source: Source) -> list[NewsArticle]:
         if not title:
             continue
 
+        # Check article publish time against cutoff
+        article_time = article_data.get("published_at")
+        if article_time:
+            if article_time.tzinfo is None:
+                article_time = article_time.replace(tzinfo=dt_tz.utc)
+            if article_time < cutoff:
+                logger.debug("Skipping old article: %s", title[:50])
+                continue
+
         # Skip non-crypto articles
         if not is_crypto_related(title, article_data.get("summary", "")):
             continue
@@ -95,7 +116,7 @@ def scrape_website_source(source: Source) -> list[NewsArticle]:
     return created
 
 
-def _find_article_links(soup: BeautifulSoup, base_url: str) -> list[tuple[str, str]]:
+def _find_article_links(soup: BeautifulSoup, base_url: str) -> list:
     """Find links that look like news articles."""
     from urllib.parse import urljoin, urlparse
 
@@ -131,7 +152,7 @@ def _find_article_links(soup: BeautifulSoup, base_url: str) -> list[tuple[str, s
         seen.add(full_url)
 
         title = a_tag.get_text(strip=True)[:200]
-        if len(title) > 10:  # Skip short/empty link texts
+        if len(title) > 10:
             results.append((full_url, title))
 
     return results
@@ -166,7 +187,6 @@ def _extract_article(url: str) -> dict | None:
     for sel in ["article", "[class*='article-body']", "[class*='post-content']", "[class*='entry-content']", "main"]:
         el = soup.select_one(sel)
         if el:
-            # Remove scripts, nav, footer
             for tag in el.find_all(["script", "style", "nav", "footer", "aside"]):
                 tag.decompose()
             content = str(el)
@@ -179,6 +199,25 @@ def _extract_article(url: str) -> dict | None:
 
     if not summary and content:
         summary = strip_tags(content)[:300].strip()
+
+    # Published time
+    published_at = None
+    for sel in [
+        "meta[property='article:published_time']",
+        "meta[name='publish-date']",
+        "time[datetime]",
+    ]:
+        el = soup.select_one(sel)
+        if el:
+            date_str = el.get("content") or el.get("datetime", "")
+            if date_str:
+                try:
+                    from dateutil import parser as dateutil_parser
+                    published_at = dateutil_parser.parse(date_str)
+                except Exception:
+                    pass
+            if published_at:
+                break
 
     # Images
     images = []
@@ -208,4 +247,5 @@ def _extract_article(url: str) -> dict | None:
         "content": content or f"<p>{summary}</p>",
         "author": author[:255],
         "images": images[:5],
+        "published_at": published_at,
     }
