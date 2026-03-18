@@ -5,6 +5,7 @@ then runs AI verification and ensures images.
 """
 
 import logging
+import time
 from news.models import Source, SourceType
 from news.scrapers.rss_scraper import scrape_rss_source
 from news.scrapers.website_scraper import scrape_website_source
@@ -20,6 +21,12 @@ SCRAPER_MAP = {
     SourceType.TWITTER: scrape_twitter_source,
 }
 
+# Max articles to verify per fetch cycle — prevents hitting Groq rate limit
+MAX_VERIFICATIONS_PER_CYCLE = 10
+
+# Delay between each AI verification in seconds
+VERIFICATION_DELAY_SECONDS = 4
+
 
 def fetch_all_sources():
     """
@@ -28,6 +35,7 @@ def fetch_all_sources():
     """
     active_sources = Source.objects.filter(is_active=True)
     total_created = 0
+    verifications_this_cycle = 0
 
     logger.info("Starting fetch cycle for %d active sources", active_sources.count())
 
@@ -48,12 +56,23 @@ def fetch_all_sources():
                 if not is_crypto_related(article.title, article.summary):
                     article.delete()
                     continue
-                
-                # Run AI verification
-                try:
-                    verify_article(article)
-                except Exception as e:
-                    logger.error("Verification failed for '%s': %s", article.title[:40], e)
+
+                # Run AI verification — with rate limit protection
+                if verifications_this_cycle < MAX_VERIFICATIONS_PER_CYCLE:
+                    try:
+                        # Add delay between verifications to avoid 429
+                        if verifications_this_cycle > 0:
+                            time.sleep(VERIFICATION_DELAY_SECONDS)
+
+                        verify_article(article)
+                        verifications_this_cycle += 1
+                    except Exception as e:
+                        logger.error("Verification failed for '%s': %s", article.title[:40], e)
+                else:
+                    logger.info(
+                        "Rate limit protection: skipping verification for '%s' (max %d/cycle reached)",
+                        article.title[:40], MAX_VERIFICATIONS_PER_CYCLE
+                    )
 
                 # Ensure at least 2 images
                 try:
@@ -66,7 +85,10 @@ def fetch_all_sources():
         except Exception as e:
             logger.error("Scraper error for '%s': %s", source.name, e)
 
-    logger.info("Fetch cycle complete: %d new articles total", total_created)
+    logger.info(
+        "Fetch cycle complete: %d new articles total, %d verified with AI",
+        total_created, verifications_this_cycle
+    )
     return total_created
 
 
@@ -85,6 +107,7 @@ def fetch_single_source(source_id: str) -> int:
     articles = scraper(source)
     for article in articles:
         try:
+            time.sleep(VERIFICATION_DELAY_SECONDS)
             verify_article(article)
         except Exception:
             pass
