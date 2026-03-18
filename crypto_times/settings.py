@@ -125,7 +125,7 @@ CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.getenv(
         "CSRF_TRUSTED_ORIGINS",
-        "http://localhost:3000",
+        "http://localhost:3000,https://crypto-times-backend-production.up.railway.app",
     ).split(",")
     if origin.strip()
 ]
