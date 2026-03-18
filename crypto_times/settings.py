@@ -122,12 +122,9 @@ CORS_ALLOW_HEADERS = ["accept", "authorization", "content-type", "origin", "x-cs
 CORS_ALLOW_METHODS = ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
 
 CSRF_TRUSTED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "CSRF_TRUSTED_ORIGINS",
-        "http://localhost:3000,https://crypto-times-backend-production.up.railway.app",
-    ).split(",")
-    if origin.strip()
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://crypto-times-backend-production.up.railway.app",
 ]
 
 # ── REST Framework ──────────────────────────────────────────
