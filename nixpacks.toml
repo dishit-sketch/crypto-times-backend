@@ -1,0 +1,12 @@
+[phases.build]
+cmds = [
+  "pip install -r requirements.txt",
+  "python manage.py collectstatic --noinput",
+  "python manage.py migrate"
+]
+
+[phases.start]
+cmd = "gunicorn crypto_times.wsgi:application --bind 0.0.0.0:$PORT --workers 3"
+
+[variables]
+PYTHON_VERSION = "3.12.9"
