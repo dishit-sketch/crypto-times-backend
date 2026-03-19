@@ -113,6 +113,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
         "id", "ai_verdict", "confidence_score", "is_breaking",
         "created_at", "updated_at", "published_at", "external_id",
         "images_gallery", "key_points_display", "moderation_buttons",
+        "original_url_link",
     )
     actions = [
         "approve_selected",
@@ -124,8 +125,8 @@ class NewsArticleAdmin(admin.ModelAdmin):
     inlines = [VerificationLogInline]
 
     fieldsets = (
-        ("Article", {
-            "fields": ("id", "title", "summary", "content", "original_url"),
+       ("Article", {
+            "fields": ("id", "title", "summary", "content", "original_url", "original_url_link"),
             "classes": ("wide",),
         }),
         ("Key Points", {
@@ -389,6 +390,17 @@ class NewsArticleAdmin(admin.ModelAdmin):
             html += f'<img src="{url}" style="height:100px;width:150px;object-fit:cover;border-radius:8px;border:2px solid #2a2a3e;" />'
         html += '</div>'
         return format_html(html)
+    
+    @admin.display(description="Source Link")
+    def original_url_link(self, obj):
+        if not obj.original_url:
+            return format_html('<span style="color:#666;">No URL</span>')
+        return format_html(
+            '<a href="{}" target="_blank" rel="noopener noreferrer" '
+            'style="color:#f7931a;text-decoration:none;font-weight:600;">'
+            '🔗 Open Source Article ↗</a>',
+            obj.original_url,
+        )
 
     @admin.action(description="Approve selected articles")
     def approve_selected(self, request, queryset):
