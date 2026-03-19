@@ -162,6 +162,8 @@ ALIBABA_API_KEY = os.getenv("ALIBABA_API_KEY", "")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+TWITTER_BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN", "")
+
 
 # DEBUG — remove after fixing
 import sys
