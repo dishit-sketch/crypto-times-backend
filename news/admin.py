@@ -1,12 +1,15 @@
 """
 Professional Admin Panel for CryptoTimes.io
 With key_points display in list and detail views.
+Approve/Reject stays on list page + buttons on detail page.
 """
 
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils import timezone
 from django.db.models import Count
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from .models import Source, NewsArticle, VerificationLog, ArticleStatus, AIVerdict
 
 
@@ -109,7 +112,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
     readonly_fields = (
         "id", "ai_verdict", "confidence_score", "is_breaking",
         "created_at", "updated_at", "published_at", "external_id",
-        "images_gallery", "key_points_display",
+        "images_gallery", "key_points_display", "moderation_buttons",
     )
     actions = [
         "approve_selected",
@@ -138,7 +141,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
             "fields": ("ai_verdict", "confidence_score"),
         }),
         ("Moderation", {
-            "fields": ("status", "is_breaking"),
+            "fields": ("status", "is_breaking", "moderation_buttons"),
         }),
         ("Metadata", {
             "fields": ("category", "tags"),
@@ -149,6 +152,58 @@ class NewsArticleAdmin(admin.ModelAdmin):
             "classes": ("collapse",),
         }),
     )
+
+    def get_urls(self):
+        from django.urls import path
+        custom_urls = [
+            path(
+                '<path:object_id>/quick-approve/',
+                self.admin_site.admin_view(self.quick_approve_view),
+                name='newsarticle-quick-approve',
+            ),
+            path(
+                '<path:object_id>/quick-reject/',
+                self.admin_site.admin_view(self.quick_reject_view),
+                name='newsarticle-quick-reject',
+            ),
+        ]
+        return custom_urls + super().get_urls()
+
+    def quick_approve_view(self, request, object_id):
+        """Approve article and redirect back to where user came from."""
+        article = self.get_object(request, object_id)
+        if article and article.status == ArticleStatus.PENDING:
+            article.approve()
+            self.message_user(request, f"✅ Approved: {article.title[:50]}")
+
+        # Redirect back to list page with any existing filters
+        referer = request.META.get('HTTP_REFERER', '')
+        if 'change' in referer and object_id in referer:
+            # Came from detail page — go back to list
+            return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
+        elif referer and 'newsarticle' in referer:
+            # Came from list page — go back to same filtered list
+            return HttpResponseRedirect(referer)
+        else:
+            return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
+
+    def quick_reject_view(self, request, object_id):
+        """Reject article and redirect back to where user came from."""
+        article = self.get_object(request, object_id)
+        if article and article.status == ArticleStatus.PENDING:
+            article.reject()
+            self.message_user(request, f"❌ Rejected: {article.title[:50]}")
+
+        # Redirect back to list page with any existing filters
+        referer = request.META.get('HTTP_REFERER', '')
+        if 'change' in referer and object_id in referer:
+            # Came from detail page — go back to list
+            return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
+        elif referer and 'newsarticle' in referer:
+            # Came from list page — go back to same filtered list
+            return HttpResponseRedirect(referer)
+        else:
+            return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
 
     @admin.display(description="")
     def thumbnail_preview(self, obj):
@@ -252,13 +307,76 @@ class NewsArticleAdmin(admin.ModelAdmin):
 
     @admin.display(description="Actions")
     def quick_actions(self, obj):
+        """Approve/Reject buttons on list page — stays on list, no redirect to detail."""
+        if obj.status == ArticleStatus.PENDING:
+            approve_url = reverse('admin:newsarticle-quick-approve', args=[obj.pk])
+            reject_url = reverse('admin:newsarticle-quick-reject', args=[obj.pk])
+            return format_html(
+                '<a href="{}" '
+                'style="background:#00d395;color:#000;padding:4px 10px;border-radius:6px;'
+                'text-decoration:none;font-size:11px;font-weight:600;margin-right:4px;"'
+                '>Approve</a>'
+                '<a href="{}" '
+                'style="background:#ff4757;color:#fff;padding:4px 10px;border-radius:6px;'
+                'text-decoration:none;font-size:11px;font-weight:600;"'
+                '>Reject</a>',
+                approve_url, reject_url,
+            )
+        elif obj.status == ArticleStatus.APPROVED:
+            return format_html('<span style="color:#00d395;font-size:11px;font-weight:600;">✅ Live</span>')
+        elif obj.status == ArticleStatus.REJECTED:
+            return format_html('<span style="color:#ff4757;font-size:11px;font-weight:600;">❌ Rejected</span>')
+        return format_html('<span style="color:#555;">—</span>')
+
+    @admin.display(description="Quick Moderation")
+    def moderation_buttons(self, obj):
+        """Approve/Reject buttons displayed on the article detail page."""
+        approve_url = reverse('admin:newsarticle-quick-approve', args=[obj.pk])
+        reject_url = reverse('admin:newsarticle-quick-reject', args=[obj.pk])
+
         if obj.status == ArticleStatus.PENDING:
             return format_html(
-                '<a href="/admin/news/newsarticle/{}/change/?_approve=1" '
-                'style="background:#00d395;color:#000;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:600;margin-right:4px;">Approve</a>'
-                '<a href="/admin/news/newsarticle/{}/change/?_reject=1" '
-                'style="background:#ff4757;color:#fff;padding:4px 10px;border-radius:6px;text-decoration:none;font-size:11px;font-weight:600;">Reject</a>',
-                obj.pk, obj.pk,
+                '<div style="display:flex;gap:12px;margin:10px 0;">'
+                '<a href="{}" style="background:#00d395;color:#000;padding:10px 30px;'
+                'border-radius:8px;text-decoration:none;font-size:14px;font-weight:700;'
+                'display:inline-block;text-align:center;min-width:120px;'
+                'box-shadow:0 2px 8px rgba(0,211,149,0.3);"'
+                '>✅ APPROVE</a>'
+                '<a href="{}" style="background:#ff4757;color:#fff;padding:10px 30px;'
+                'border-radius:8px;text-decoration:none;font-size:14px;font-weight:700;'
+                'display:inline-block;text-align:center;min-width:120px;'
+                'box-shadow:0 2px 8px rgba(255,71,87,0.3);"'
+                '>❌ REJECT</a>'
+                '</div>',
+                approve_url, reject_url,
+            )
+        elif obj.status == ArticleStatus.APPROVED:
+            return format_html(
+                '<div style="display:flex;gap:12px;align-items:center;margin:10px 0;">'
+                '<span style="background:#00d395;color:#000;padding:10px 30px;'
+                'border-radius:8px;font-size:14px;font-weight:700;'
+                'display:inline-block;">✅ APPROVED — LIVE</span>'
+                '<a href="{}" style="background:#ff4757;color:#fff;padding:10px 30px;'
+                'border-radius:8px;text-decoration:none;font-size:14px;font-weight:700;'
+                'display:inline-block;text-align:center;min-width:120px;'
+                'box-shadow:0 2px 8px rgba(255,71,87,0.3);"'
+                '>❌ REJECT</a>'
+                '</div>',
+                reject_url,
+            )
+        elif obj.status == ArticleStatus.REJECTED:
+            return format_html(
+                '<div style="display:flex;gap:12px;align-items:center;margin:10px 0;">'
+                '<a href="{}" style="background:#00d395;color:#000;padding:10px 30px;'
+                'border-radius:8px;text-decoration:none;font-size:14px;font-weight:700;'
+                'display:inline-block;text-align:center;min-width:120px;'
+                'box-shadow:0 2px 8px rgba(0,211,149,0.3);"'
+                '>✅ APPROVE</a>'
+                '<span style="background:#ff4757;color:#fff;padding:10px 30px;'
+                'border-radius:8px;font-size:14px;font-weight:700;'
+                'display:inline-block;">❌ REJECTED</span>'
+                '</div>',
+                approve_url,
             )
         return format_html('<span style="color:#555;">—</span>')
 
@@ -271,19 +389,6 @@ class NewsArticleAdmin(admin.ModelAdmin):
             html += f'<img src="{url}" style="height:100px;width:150px;object-fit:cover;border-radius:8px;border:2px solid #2a2a3e;" />'
         html += '</div>'
         return format_html(html)
-
-    def change_view(self, request, object_id, form_url="", extra_context=None):
-        if request.GET.get("_approve") == "1":
-            article = self.get_object(request, object_id)
-            if article and article.status == ArticleStatus.PENDING:
-                article.approve()
-                self.message_user(request, f"Approved: {article.title[:50]}")
-        elif request.GET.get("_reject") == "1":
-            article = self.get_object(request, object_id)
-            if article and article.status == ArticleStatus.PENDING:
-                article.reject()
-                self.message_user(request, f"Rejected: {article.title[:50]}")
-        return super().change_view(request, object_id, form_url, extra_context)
 
     @admin.action(description="Approve selected articles")
     def approve_selected(self, request, queryset):
