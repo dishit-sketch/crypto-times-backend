@@ -90,6 +90,33 @@
 #ct-breaking-banner .headline {
     color: #fff; font-size: 15px;
     font-weight: 600; margin-top: 4px;
+    cursor: pointer;
+}
+/* Auto-refresh indicator */
+#ct-refresh-indicator {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 99998;
+    background: #0d1117;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: #6b7280;
+}
+#ct-refresh-indicator .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00d395;
+    animation: pulse 2s infinite;
+}
+#ct-refresh-indicator.refreshing .dot {
+    background: #f7931a;
 }
 @keyframes slideInRight {
     from { opacity: 0; transform: translateX(100%); }
@@ -112,11 +139,16 @@
     <div class="text">🚨 BREAKING NEWS 🚨</div>
     <div class="headline" id="ct-breaking-headline"></div>
 </div>
+<div id="ct-refresh-indicator">
+    <span class="dot"></span>
+    <span id="ct-refresh-text">Live</span>
+</div>
 
 <script>
 (function() {
-    var POLL_INTERVAL = 15000;
+    var POLL_INTERVAL = 5000;       // Check for new articles every 5 seconds
     var TOAST_DURATION = 8000;
+    var REFRESH_INTERVAL = 5000;    // Auto-refresh list page every 5 seconds
     var lastCheckTime = new Date().toISOString();
     var knownIds = [];
 
@@ -124,6 +156,7 @@
         Notification.requestPermission();
     }
 
+    // ── Sound Effects ──────────────────────────────────────
     function playSound(type) {
         try {
             var ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -150,6 +183,7 @@
         } catch(e) {}
     }
 
+    // ── Toast Notification ─────────────────────────────────
     function showToast(article, isBreaking) {
         var container = document.getElementById('ct-notifications');
         if (!container) return;
@@ -176,13 +210,16 @@
             '<button class="ct-toast-close">×</button>' +
             '<div class="ct-toast-progress"><div></div></div>';
 
+        // Close button
         toast.querySelector('.ct-toast-close').onclick = function(e) {
             e.stopPropagation();
             toast.classList.add('removing');
             setTimeout(function() { if (toast.parentNode) toast.remove(); }, 400);
         };
+
+        // Click toast → redirect to that article's detail page
         toast.onclick = function() {
-            window.open('/admin/news/newsarticle/' + article.id + '/change/', '_blank');
+            window.location.href = '/admin/news/newsarticle/' + article.id + '/change/';
         };
 
         container.appendChild(toast);
@@ -195,22 +232,33 @@
             }
         }, TOAST_DURATION);
 
+        // Browser notification — click also redirects
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
-                new Notification(
+                var notif = new Notification(
                     isBreaking ? '🚨 BREAKING: ' + article.title : '📰 ' + article.title,
                     { body: article.source_name || '', icon: image || '' }
                 );
+                notif.onclick = function() {
+                    window.focus();
+                    window.location.href = '/admin/news/newsarticle/' + article.id + '/change/';
+                };
             } catch(e) {}
         }
     }
 
+    // ── Breaking News Banner ───────────────────────────────
     function showBreaking(article) {
         var banner = document.getElementById('ct-breaking-banner');
         var headline = document.getElementById('ct-breaking-headline');
         if (!banner || !headline) return;
         headline.textContent = article.title;
         banner.classList.add('active');
+
+        // Click banner → redirect to article
+        headline.onclick = function() {
+            window.location.href = '/admin/news/newsarticle/' + article.id + '/change/';
+        };
 
         var flashes = 0;
         var orig = document.title;
@@ -227,6 +275,7 @@
         }, 15000);
     }
 
+    // ── Poll for new articles ──────────────────────────────
     function poll() {
         fetch('/api/admin/recent-articles?since=' + encodeURIComponent(lastCheckTime))
             .then(function(r) { return r.json(); })
@@ -244,14 +293,90 @@
             .catch(function() {});
     }
 
+    // ── Auto-refresh article list page every 5 seconds ─────
+    function isArticleListPage() {
+        // Check if we're on the news article changelist page
+        return window.location.pathname.indexOf('/admin/news/newsarticle/') === 0
+            && window.location.pathname.indexOf('/change/') === -1
+            && window.location.pathname.indexOf('/add/') === -1;
+    }
+
+    function refreshArticleList() {
+        if (!isArticleListPage()) return;
+
+        var indicator = document.getElementById('ct-refresh-indicator');
+        var refreshText = document.getElementById('ct-refresh-text');
+
+        // Show refreshing state
+        if (indicator) indicator.classList.add('refreshing');
+        if (refreshText) refreshText.textContent = 'Refreshing...';
+
+        // Fetch the current page HTML
+        fetch(window.location.href, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function(r) { return r.text(); })
+        .then(function(html) {
+            // Parse the new HTML
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(html, 'text/html');
+
+            // Replace the results table
+            var newTable = doc.getElementById('result_list');
+            var oldTable = document.getElementById('result_list');
+            if (newTable && oldTable) {
+                oldTable.parentNode.replaceChild(
+                    document.importNode(newTable, true),
+                    oldTable
+                );
+            }
+
+            // Update the result count text
+            var newCount = doc.querySelector('.paginator');
+            var oldCount = document.querySelector('.paginator');
+            if (newCount && oldCount) {
+                oldCount.innerHTML = newCount.innerHTML;
+            }
+
+            // Update action checkboxes
+            var newActions = doc.querySelector('.actions');
+            var oldActions = document.querySelector('.actions');
+            if (newActions && oldActions) {
+                oldActions.innerHTML = newActions.innerHTML;
+            }
+
+            // Show live state
+            if (indicator) indicator.classList.remove('refreshing');
+            if (refreshText) refreshText.textContent = 'Live · ' + new Date().toLocaleTimeString();
+        })
+        .catch(function() {
+            if (indicator) indicator.classList.remove('refreshing');
+            if (refreshText) refreshText.textContent = 'Live';
+        });
+    }
+
+    // ── Initialize ─────────────────────────────────────────
     window.showNotification = function(article) {
         showToast(article, article.is_breaking || false);
     };
 
+    // Start notification polling every 5 seconds
     setTimeout(poll, 3000);
     setInterval(poll, POLL_INTERVAL);
 
-    console.log('[CryptoTimes] Admin notification system active — polling every 15s');
+    // Start auto-refresh on article list page every 5 seconds
+    if (isArticleListPage()) {
+        setInterval(refreshArticleList, REFRESH_INTERVAL);
+        console.log('[CryptoTimes] Auto-refresh active — list updates every 5s');
+    }
+
+    // Hide refresh indicator on non-list pages
+    if (!isArticleListPage()) {
+        var indicator = document.getElementById('ct-refresh-indicator');
+        if (indicator) indicator.style.display = 'none';
+    }
+
+    console.log('[CryptoTimes] Admin notification system active — polling every 5s');
 })();
 </script>
 {% endblock %}
