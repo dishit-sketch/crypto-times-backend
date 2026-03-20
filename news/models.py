@@ -3,6 +3,7 @@ Database models for The Crypto Times news platform.
 """
 
 import uuid
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -36,6 +37,14 @@ class Source(models.Model):
     url = models.URLField(max_length=500)
     logo = models.URLField(max_length=500, blank=True, default="")
     description = models.TextField(blank=True, default="")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="sources",
+        help_text="Admin user who owns this source. Empty = shared/system source visible to all.",
+    )
     is_active = models.BooleanField(default=True, help_text="Inactive sources are skipped during fetching.")
     reliability_score = models.IntegerField(
         default=50,

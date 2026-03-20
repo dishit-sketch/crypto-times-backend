@@ -2,12 +2,13 @@
 Professional Admin Panel for CryptoTimes.io
 With key_points display in list and detail views.
 Approve/Reject stays on list page + buttons on detail page.
+Source ownership — each admin sees only their own sources and articles.
 """
 
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Source, NewsArticle, VerificationLog, ArticleStatus, AIVerdict
@@ -31,8 +32,8 @@ class VerificationLogInline(admin.TabularInline):
 
 @admin.register(Source)
 class SourceAdmin(admin.ModelAdmin):
-    list_display = ("name", "type_badge", "reliability_bar", "article_count", "is_active", "last_fetched_display")
-    list_filter = ("type", "is_active")
+    list_display = ("name", "type_badge", "owner_display", "reliability_bar", "article_count", "is_active", "last_fetched_display")
+    list_filter = ("type", "is_active", "owner")
     search_fields = ("name", "url", "description")
     list_editable = ("is_active",)
     list_per_page = 50
@@ -40,12 +41,36 @@ class SourceAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Source Info", {"fields": ("id", "name", "type", "url", "logo", "description")}),
+        ("Ownership", {"fields": ("owner",)}),
         ("Settings", {"fields": ("is_active", "reliability_score")}),
         ("Timestamps", {"fields": ("last_fetched_at", "created_at", "updated_at"), "classes": ("collapse",)}),
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(_article_count=Count("articles"))
+        qs = super().get_queryset(request).annotate(_article_count=Count("articles"))
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(Q(owner=request.user) | Q(owner__isnull=True))
+
+    def save_model(self, request, obj, form, change):
+        if not change and not obj.owner:
+            obj.owner = request.user
+        super().save_model(request, obj, form, change)
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if not request.user.is_superuser and 'owner' in form.base_fields:
+            form.base_fields['owner'].disabled = True
+        return form
+
+    @admin.display(description="Owner")
+    def owner_display(self, obj):
+        if not obj.owner:
+            return format_html('<span style="color:#888;font-size:11px;">Shared</span>')
+        return format_html(
+            '<span style="color:#f7931a;font-size:11px;font-weight:600;">{}</span>',
+            obj.owner.username,
+        )
 
     @admin.display(description="Type")
     def type_badge(self, obj):
@@ -125,7 +150,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
     inlines = [VerificationLogInline]
 
     fieldsets = (
-       ("Article", {
+        ("Article", {
             "fields": ("id", "title", "summary", "content", "original_url", "original_url_link"),
             "classes": ("wide",),
         }),
@@ -154,6 +179,14 @@ class NewsArticleAdmin(admin.ModelAdmin):
         }),
     )
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(
+            Q(source__owner=request.user) | Q(source__owner__isnull=True)
+        )
+
     def get_urls(self):
         from django.urls import path
         custom_urls = [
@@ -171,37 +204,29 @@ class NewsArticleAdmin(admin.ModelAdmin):
         return custom_urls + super().get_urls()
 
     def quick_approve_view(self, request, object_id):
-        """Approve article and redirect back to where user came from."""
         article = self.get_object(request, object_id)
         if article and article.status == ArticleStatus.PENDING:
             article.approve()
             self.message_user(request, f"✅ Approved: {article.title[:50]}")
 
-        # Redirect back to list page with any existing filters
         referer = request.META.get('HTTP_REFERER', '')
-        if 'change' in referer and object_id in referer:
-            # Came from detail page — go back to list
+        if 'change' in referer and str(object_id) in referer:
             return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
         elif referer and 'newsarticle' in referer:
-            # Came from list page — go back to same filtered list
             return HttpResponseRedirect(referer)
         else:
             return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
 
     def quick_reject_view(self, request, object_id):
-        """Reject article and redirect back to where user came from."""
         article = self.get_object(request, object_id)
         if article and article.status == ArticleStatus.PENDING:
             article.reject()
             self.message_user(request, f"❌ Rejected: {article.title[:50]}")
 
-        # Redirect back to list page with any existing filters
         referer = request.META.get('HTTP_REFERER', '')
-        if 'change' in referer and object_id in referer:
-            # Came from detail page — go back to list
+        if 'change' in referer and str(object_id) in referer:
             return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
         elif referer and 'newsarticle' in referer:
-            # Came from list page — go back to same filtered list
             return HttpResponseRedirect(referer)
         else:
             return HttpResponseRedirect(reverse('admin:news_newsarticle_changelist'))
@@ -308,7 +333,6 @@ class NewsArticleAdmin(admin.ModelAdmin):
 
     @admin.display(description="Actions")
     def quick_actions(self, obj):
-        """Approve/Reject buttons on list page — stays on list, no redirect to detail."""
         if obj.status == ArticleStatus.PENDING:
             approve_url = reverse('admin:newsarticle-quick-approve', args=[obj.pk])
             reject_url = reverse('admin:newsarticle-quick-reject', args=[obj.pk])
@@ -331,7 +355,6 @@ class NewsArticleAdmin(admin.ModelAdmin):
 
     @admin.display(description="Quick Moderation")
     def moderation_buttons(self, obj):
-        """Approve/Reject buttons displayed on the article detail page."""
         approve_url = reverse('admin:newsarticle-quick-approve', args=[obj.pk])
         reject_url = reverse('admin:newsarticle-quick-reject', args=[obj.pk])
 
@@ -390,7 +413,7 @@ class NewsArticleAdmin(admin.ModelAdmin):
             html += f'<img src="{url}" style="height:100px;width:150px;object-fit:cover;border-radius:8px;border:2px solid #2a2a3e;" />'
         html += '</div>'
         return format_html(html)
-    
+
     @admin.display(description="Source Link")
     def original_url_link(self, obj):
         if not obj.original_url:
