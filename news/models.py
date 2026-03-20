@@ -37,13 +37,11 @@ class Source(models.Model):
     url = models.URLField(max_length=500)
     logo = models.URLField(max_length=500, blank=True, default="")
     description = models.TextField(blank=True, default="")
-    owner = models.ForeignKey(
+    owners = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
         blank=True,
         related_name="sources",
-        help_text="Admin user who owns this source. Empty = shared/system source visible to all.",
+        help_text="Admin users who can see this source. Empty = visible to all (shared).",
     )
     is_active = models.BooleanField(default=True, help_text="Inactive sources are skipped during fetching.")
     reliability_score = models.IntegerField(

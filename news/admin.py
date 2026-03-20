@@ -2,7 +2,8 @@
 Professional Admin Panel for CryptoTimes.io
 With key_points display in list and detail views.
 Approve/Reject stays on list page + buttons on detail page.
-Source ownership — each admin sees only their own sources and articles.
+Source ownership (ManyToMany) — each admin sees only their own sources and articles.
+Multiple users can share the same source.
 """
 
 from django.contrib import admin
@@ -32,16 +33,20 @@ class VerificationLogInline(admin.TabularInline):
 
 @admin.register(Source)
 class SourceAdmin(admin.ModelAdmin):
-    list_display = ("name", "type_badge", "owner_display", "reliability_bar", "article_count", "is_active", "last_fetched_display")
-    list_filter = ("type", "is_active", "owner")
+    list_display = ("name", "type_badge", "owners_display", "reliability_bar", "article_count", "is_active", "last_fetched_display")
+    list_filter = ("type", "is_active")
     search_fields = ("name", "url", "description")
     list_editable = ("is_active",)
     list_per_page = 50
     readonly_fields = ("id", "created_at", "updated_at", "last_fetched_at")
+    filter_horizontal = ("owners",)
 
     fieldsets = (
         ("Source Info", {"fields": ("id", "name", "type", "url", "logo", "description")}),
-        ("Ownership", {"fields": ("owner",)}),
+        ("Ownership", {
+            "fields": ("owners",),
+            "description": "Select which admins can see this source. Leave empty = visible to all (shared).",
+        }),
         ("Settings", {"fields": ("is_active", "reliability_score")}),
         ("Timestamps", {"fields": ("last_fetched_at", "created_at", "updated_at"), "classes": ("collapse",)}),
     )
@@ -49,27 +54,25 @@ class SourceAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request).annotate(_article_count=Count("articles"))
         if request.user.is_superuser:
-            return qs
-        return qs.filter(Q(owner=request.user) | Q(owner__isnull=True))
+            return qs  # Superuser sees all sources
+        # Non-superuser sees: sources assigned to them + shared sources (no owners)
+        return qs.filter(Q(owners=request.user) | Q(owners__isnull=True)).distinct()
 
     def save_model(self, request, obj, form, change):
-        if not change and not obj.owner:
-            obj.owner = request.user
         super().save_model(request, obj, form, change)
+        # Auto-add creator as owner for new sources if no owners selected
+        if not change and not obj.owners.exists():
+            obj.owners.add(request.user)
 
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        if not request.user.is_superuser and 'owner' in form.base_fields:
-            form.base_fields['owner'].disabled = True
-        return form
-
-    @admin.display(description="Owner")
-    def owner_display(self, obj):
-        if not obj.owner:
-            return format_html('<span style="color:#888;font-size:11px;">Shared</span>')
+    @admin.display(description="Owners")
+    def owners_display(self, obj):
+        users = obj.owners.all()
+        if not users:
+            return format_html('<span style="color:#888;font-size:11px;">Shared (All)</span>')
+        names = ", ".join(u.username for u in users)
         return format_html(
             '<span style="color:#f7931a;font-size:11px;font-weight:600;">{}</span>',
-            obj.owner.username,
+            names,
         )
 
     @admin.display(description="Type")
@@ -182,10 +185,11 @@ class NewsArticleAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
-            return qs
+            return qs  # Superuser sees all articles
+        # Non-superuser sees: articles from their sources + articles from shared sources
         return qs.filter(
-            Q(source__owner=request.user) | Q(source__owner__isnull=True)
-        )
+            Q(source__owners=request.user) | Q(source__owners__isnull=True)
+        ).distinct()
 
     def get_urls(self):
         from django.urls import path
