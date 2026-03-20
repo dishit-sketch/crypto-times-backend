@@ -442,8 +442,9 @@ def scan_eth_whales(source: Source) -> list[NewsArticle]:
     try:
         # Get latest block number
         resp = httpx.get(
-            "https://api.etherscan.io/api",
+            "https://api.etherscan.io/v2/api",
             params={
+                "chainid": "1",
                 "module": "proxy",
                 "action": "eth_blockNumber",
                 "apikey": etherscan_key,
@@ -463,8 +464,9 @@ def scan_eth_whales(source: Source) -> list[NewsArticle]:
             time.sleep(0.3)  # Rate limit: 5 calls/sec on free tier
 
             block_resp = httpx.get(
-                "https://api.etherscan.io/api",
+                "https://api.etherscan.io/v2/api",
                 params={
+                    "chainid": "1",
                     "module": "proxy",
                     "action": "eth_getBlockByNumber",
                     "tag": hex(block_num),
