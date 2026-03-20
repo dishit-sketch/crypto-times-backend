@@ -95,8 +95,8 @@ def scrape_rss_source(source) -> list:
         if cutoff.tzinfo is None:
             cutoff = cutoff.replace(tzinfo=dt_tz.utc)
     else:
-        cutoff = datetime.now(dt_tz.utc) - timedelta(hours=1)
-        logger.info("New source '%s' — only fetching last 1 hour", source.name)
+        cutoff = datetime.now(dt_tz.utc) - timedelta(minutes=10)
+        logger.info("New source '%s' — only fetching last 10 minutes", source.name)
 
     skipped_old = 0
     skipped_noncrypto = 0
