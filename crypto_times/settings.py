@@ -192,7 +192,7 @@ FIDO_SERVER_ID = os.getenv(
 FIDO_SERVER_NAME = "The Crypto Times"
 
 # After successfully registering a key, go back to the admin dashboard.
-MFA_REDIRECT_AFTER_REGISTRATION = "/admin/"
+MFA_REDIRECT_AFTER_REGISTRATION = "admin:index"
 
 # Re-verify the security key after 1 hour of inactivity (seconds).
 MFA_RECHECK_INTERVAL = 3600
