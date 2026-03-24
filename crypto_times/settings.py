@@ -191,11 +191,21 @@ FIDO_SERVER_ID = os.getenv(
 )
 FIDO_SERVER_NAME = "The Crypto Times"
 
+# Called by django-mfa2 after successful FIDO2 verification to log the user in.
+MFA_LOGIN_CALLBACK = "crypto_times.mfa_callbacks.login_callback"
+
+# Shown in the UI after a key is registered successfully.
+MFA_SUCCESS_REGISTRATION_MSG = "Security key registered successfully."
+
 # After successfully registering a key, go back to the admin dashboard.
 MFA_REDIRECT_AFTER_REGISTRATION = "admin:index"
 
-# Re-verify the security key after 1 hour of inactivity (seconds).
-MFA_RECHECK_INTERVAL = 3600
+# Key types whose enable/disable toggle is hidden in the MFA dashboard.
+MFA_HIDE_DISABLE = []
+
+# Recheck disabled — set MFA_RECHECK=True and provide MFA_RECHECK_MIN/MAX
+# (seconds) if periodic re-verification is needed.
+MFA_RECHECK = False
 
 # Only staff/admin users are required to use MFA.
 MFA_STAFF_ONLY = True
