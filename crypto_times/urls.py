@@ -11,6 +11,7 @@ admin.site.index_title = "News Moderation Dashboard"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("mfa/", include("mfa.urls")),
     path("api/", include("api.urls")),
 ]
 

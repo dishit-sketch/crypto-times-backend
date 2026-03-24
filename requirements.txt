@@ -17,3 +17,5 @@ gunicorn>=21.2
 dj-database-url>=2.1
 psycopg[binary]>=3.1
 whitenoise>=6.5
+django-mfa2>=2.7
+fido2>=1.1

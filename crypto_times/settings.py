@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "django_filters",
+    "mfa",
     "news",
     "api",
 ]
@@ -54,6 +55,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "mfa.middleware.MFAMiddleware",
 ]
 
 ROOT_URLCONF = "crypto_times.urls"
@@ -177,6 +179,27 @@ UNSPLASH_ACCESS_KEY = os.getenv("UNSPLASH_ACCESS_KEY", "")
 FETCH_INTERVAL_MINUTES = int(os.getenv("FETCH_INTERVAL_MINUTES", "5"))
 TWITTER_BEARER_TOKEN = os.getenv("TWITTER_BEARER_TOKEN", "")
 ZAPIER_WEBHOOK_URL = os.getenv("ZAPIER_WEBHOOK_URL", "")
+
+# ── MFA / FIDO2 ─────────────────────────────────────────────
+# Only FIDO2 (hardware security keys / passkeys) are allowed.
+# TOTP, Email, and legacy U2F methods are disabled.
+MFA_UNALLOWED_METHODS = ("TOTP", "Email", "Trusted_Devices", "U2F")
+
+# Relying-party settings for WebAuthn — must match the production origin.
+FIDO_SERVER_ID = os.getenv(
+    "FIDO_SERVER_ID",
+    "crypto-times-backend-production.up.railway.app",
+)
+FIDO_SERVER_NAME = "The Crypto Times"
+
+# After successfully registering a key, go back to the admin dashboard.
+MFA_REDIRECT_AFTER_REGISTRATION = "/admin/"
+
+# Re-verify the security key after 1 hour of inactivity (seconds).
+MFA_RECHECK_INTERVAL = 3600
+
+# Only staff/admin users are required to use MFA.
+MFA_STAFF_ONLY = True
 
 # ── Logging ─────────────────────────────────────────────────
 LOGGING = {
