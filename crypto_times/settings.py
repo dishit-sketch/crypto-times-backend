@@ -55,7 +55,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "mfa.middleware.MFAMiddleware",
 ]
 
 ROOT_URLCONF = "crypto_times.urls"
