@@ -19,5 +19,10 @@ def login_callback(request, username=None):
     user.backend = "django.contrib.auth.backends.ModelBackend"
     login(request, user)
 
-    next_url = request.POST.get("next") or request.GET.get("next") or "/admin/"
+    next_url = (
+        request.session.pop("mfa_next", None)
+        or request.POST.get("next")
+        or request.GET.get("next")
+        or "/admin/"
+    )
     return HttpResponseRedirect(next_url)

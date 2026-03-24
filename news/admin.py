@@ -7,6 +7,12 @@ Multiple users can share the same source.
 """
 
 from django.contrib import admin
+from crypto_times.admin_site import MFAAdminSite
+
+# Patch the default admin site so all @admin.register decorators below
+# automatically use the MFA-aware login without any other changes.
+admin.site.__class__ = MFAAdminSite
+
 from django.utils.html import format_html
 from django.utils import timezone
 from django.db.models import Count, Q
