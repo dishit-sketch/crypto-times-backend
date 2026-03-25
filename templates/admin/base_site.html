@@ -47,7 +47,7 @@
     transition: transform 0.2s;
     position: relative;
 }
-.ct-toast:hover { transform: translateY(-2px); border-color: #f7931a55; }
+.ct-toast:hover { transform: translateY(-2px); }
 .ct-toast.removing { animation: slideOutRight 0.4s ease-in forwards; }
 .ct-toast-inner { display: flex; gap: 12px; padding: 14px; }
 .ct-toast-img {
@@ -62,14 +62,10 @@
     margin-bottom: 4px; display: flex;
     align-items: center; gap: 6px;
 }
-.ct-toast-label.new { color: #f7931a; }
-.ct-toast-label.breaking { color: #ff4757; }
 .ct-toast-label .dot {
     width: 6px; height: 6px;
     border-radius: 50%; animation: pulse 1.5s infinite;
 }
-.ct-toast-label.new .dot { background: #f7931a; }
-.ct-toast-label.breaking .dot { background: #ff4757; }
 .ct-toast-title {
     font-size: 13px; font-weight: 600;
     color: #e8eaed; line-height: 1.3;
@@ -90,8 +86,6 @@
 .ct-toast-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
 .ct-toast-progress { height: 2px; background: #1a1a2e; }
 .ct-toast-progress div { height: 100%; animation: shrink 8s linear forwards; }
-.ct-toast.new .ct-toast-progress div { background: #f7931a88; }
-.ct-toast.breaking .ct-toast-progress div { background: #ff475799; }
 #ct-breaking-banner {
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 9999999;
@@ -201,32 +195,58 @@
         } catch(e) {}
     }
 
+    // ── Source-type style map ──────────────────────────────
+    var SOURCE_STYLES = {
+        twitter: { color: '#1DA1F2', label: '𝕏 FROM X',       typeLabel: 'X' },
+        rss:     { color: '#ee802f', label: '📡 FROM RSS',      typeLabel: 'RSS' },
+        website: { color: '#f7931a', label: '🌐 FROM WEB',      typeLabel: 'Website' },
+        whale:   { color: '#00d395', label: '🐋 WHALE ALERT',   typeLabel: 'Whale' },
+    };
+    var BREAKING_STYLE = { color: '#ff4757', label: '🚨 BREAKING' };
+
+    function getStyle(article, isBreaking) {
+        if (isBreaking) return BREAKING_STYLE;
+        return SOURCE_STYLES[article.source_type] || { color: '#f7931a', label: '📰 NEW ARTICLE', typeLabel: '' };
+    }
+
     // ── Toast Notification ─────────────────────────────────
     function showToast(article, isBreaking) {
         var container = document.getElementById('ct-notifications');
         if (!container) return;
-        var type = isBreaking ? 'breaking' : 'new';
+
+        var style = getStyle(article, isBreaking);
+        var color = style.color;
+        var typeLabel = isBreaking
+            ? (SOURCE_STYLES[article.source_type] ? SOURCE_STYLES[article.source_type].typeLabel : '')
+            : (style.typeLabel || '');
+
         var image = (article.images && article.images.length > 0) ? article.images[0] : '';
         var imgHtml = image
             ? '<img class="ct-toast-img" src="' + image + '" alt="">'
             : '<div class="ct-toast-img" style="display:flex;align-items:center;justify-content:center;color:#555;font-size:20px;">📰</div>';
 
+        var sourceName = article.source_name || '';
+        var metaText = typeLabel
+            ? sourceName + ' \u2014 ' + typeLabel + ' \u00b7 Just now'
+            : sourceName + ' \u00b7 Just now';
+
         var toast = document.createElement('div');
-        toast.className = 'ct-toast ' + type;
+        toast.className = 'ct-toast';
+        toast.style.borderLeft = '4px solid ' + color;
         toast.innerHTML =
             '<div class="ct-toast-inner">' +
                 imgHtml +
                 '<div class="ct-toast-content">' +
-                    '<div class="ct-toast-label ' + type + '">' +
-                        '<span class="dot"></span>' +
-                        (isBreaking ? '🚨 BREAKING' : '📰 NEW ARTICLE') +
+                    '<div class="ct-toast-label" style="color:' + color + '">' +
+                        '<span class="dot" style="background:' + color + '"></span>' +
+                        style.label +
                     '</div>' +
                     '<div class="ct-toast-title">' + (article.title || 'New Article') + '</div>' +
-                    '<div class="ct-toast-meta">' + (article.source_name || '') + ' · Just now</div>' +
+                    '<div class="ct-toast-meta">' + metaText + '</div>' +
                 '</div>' +
             '</div>' +
-            '<button class="ct-toast-close">×</button>' +
-            '<div class="ct-toast-progress"><div></div></div>';
+            '<button class="ct-toast-close">\u00d7</button>' +
+            '<div class="ct-toast-progress"><div style="background:' + color + '99"></div></div>';
 
         // Close button
         toast.querySelector('.ct-toast-close').onclick = function(e) {
@@ -254,8 +274,8 @@
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
                 var notif = new Notification(
-                    isBreaking ? '🚨 BREAKING: ' + article.title : '📰 ' + article.title,
-                    { body: article.source_name || '', icon: image || '' }
+                    isBreaking ? '🚨 BREAKING: ' + article.title : style.label + ': ' + article.title,
+                    { body: metaText, icon: image || '' }
                 );
                 notif.onclick = function() {
                     window.focus();

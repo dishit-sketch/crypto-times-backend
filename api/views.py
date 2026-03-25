@@ -315,11 +315,18 @@ def recent_articles(request):
 
     articles = []
     for a in qs:
+        if a.source and a.source.url == "WHALE_MONITOR":
+            source_type = "whale"
+        elif a.source:
+            source_type = a.source.type
+        else:
+            source_type = ""
         articles.append({
             "id": str(a.id),
             "title": a.title,
             "summary": a.summary[:200] if a.summary else "",
             "source_name": a.source.name if a.source else "",
+            "source_type": source_type,
             "images": a.images if isinstance(a.images, list) else [],
             "ai_verdict": a.ai_verdict,
             "confidence_score": a.confidence_score,
