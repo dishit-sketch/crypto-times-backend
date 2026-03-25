@@ -4,8 +4,9 @@ X (Twitter) scraper for The Crypto Times.
 Uses Twitter API v2 with Bearer Token to monitor crypto accounts
 and create news articles from their tweets in real-time.
 
-Monitored accounts include exchanges, foundations, analysts,
-security firms, and regulatory bodies.
+Account list is read dynamically from the database (active Twitter-type
+sources).  A module-level cache refreshes every 5 minutes so that newly
+added sources are picked up without restarting the server.
 """
 
 import logging
@@ -27,31 +28,6 @@ logger = logging.getLogger("news")
 # ── Twitter API v2 base URL ─────────────────────────────────
 TWITTER_API_BASE = "https://api.twitter.com/2"
 
-# ── Accounts to monitor (username → display name) ───────────
-# Add or remove accounts as needed
-CRYPTO_ACCOUNTS = {
-    "whale_alert": "Whale Alert",
-    "binance": "Binance",
-    "coinaboreta": "Coinbase",
-    "kaboraten": "Kraken",
-    "WatcherGuru": "Watcher Guru",
-    "caborez_binance": "CZ Binance",
-    "VitalikButerin": "Vitalik Buterin",
-    "saylor": "Michael Saylor",
-    "SECGov": "SEC",
-    "tier10k": "Tier10K",
-    "BitcoinMagazine": "Bitcoin Magazine",
-    "Cointelegraph": "CoinTelegraph",
-    "Decrypt": "Decrypt",
-    "BlockworksRes": "Blockworks",
-    "PeckShieldAlert": "PeckShield",
-    "SlowMist_Team": "SlowMist",
-    "zachxbt": "ZachXBT",
-    "lookonchain": "Lookonchain",
-    "ArkhamIntel": "Arkham Intelligence",
-    "RippleXDev": "Ripple",
-}
-
 # ── Minimum tweet length to consider as news ────────────────
 MIN_TWEET_LENGTH = 30
 
@@ -60,6 +36,80 @@ MIN_TWEET_LENGTH = 30
 MAX_ACCOUNTS_PER_CYCLE = 12
 DELAY_BETWEEN_REQUESTS = 5  # seconds
 
+# ── Source cache — refreshed every 5 minutes ────────────────
+_SOURCE_CACHE_TTL = 300  # seconds
+_cached_accounts: dict[str, str] = {}   # {username: display_name}
+_cache_last_refreshed: float = 0.0      # time.monotonic() timestamp
+
+
+# ── Username extraction ──────────────────────────────────────
+
+def extract_twitter_username(url: str) -> str:
+    """
+    Extract a Twitter/X username from any reasonable format:
+      - https://x.com/whale_alert
+      - https://twitter.com/whale_alert
+      - https://x.com/whale_alert/
+      - @whale_alert
+      - whale_alert
+    Returns the bare username (no @ prefix, no trailing slash).
+    """
+    url = url.strip().rstrip("/")
+    # URL forms
+    match = re.search(r"(?:x\.com|twitter\.com)/([A-Za-z0-9_]+)", url, re.IGNORECASE)
+    if match:
+        return match.group(1)
+    # Plain username (possibly with leading @)
+    return url.lstrip("@")
+
+
+# ── DB-backed account list ───────────────────────────────────
+
+def _load_accounts_from_db() -> dict[str, str]:
+    """
+    Query all active Twitter-type sources and return
+    {username: display_name} for every source whose URL
+    is not the special sentinel "ALL".
+    """
+    accounts: dict[str, str] = {}
+    qs = Source.objects.filter(source_type="twitter", is_active=True)
+    for src in qs:
+        raw = (src.url or "").strip()
+        if raw.upper() == "ALL":
+            continue
+        username = extract_twitter_username(raw)
+        if username:
+            accounts[username] = src.name or username
+    return accounts
+
+
+def _get_active_accounts() -> dict[str, str]:
+    """
+    Return the cached {username: display_name} map, refreshing from
+    the database if the cache is older than _SOURCE_CACHE_TTL seconds.
+    """
+    global _cached_accounts, _cache_last_refreshed
+
+    now = time.monotonic()
+    if now - _cache_last_refreshed >= _SOURCE_CACHE_TTL:
+        fresh = _load_accounts_from_db()
+        new_usernames = set(fresh) - set(_cached_accounts)
+        if new_usernames:
+            logger.info(
+                "Twitter source cache: %d new account(s) detected — %s",
+                len(new_usernames),
+                ", ".join(f"@{u}" for u in sorted(new_usernames)),
+            )
+        _cached_accounts = fresh
+        _cache_last_refreshed = now
+        logger.debug(
+            "Twitter source cache refreshed: %d active account(s)", len(fresh)
+        )
+
+    return _cached_accounts
+
+
+# ── Twitter API helpers ──────────────────────────────────────
 
 def _get_headers() -> dict:
     """Build authorization headers for Twitter API v2."""
@@ -277,14 +327,17 @@ def _tweet_to_article(
     return article
 
 
+# ── Public entry point ───────────────────────────────────────
+
 def scrape_twitter_source(source: Source) -> list[NewsArticle]:
     """
     Fetch recent tweets from a Twitter/X source.
 
-    The source.url should be one of:
-    - A Twitter profile URL like https://x.com/whale_alert
-    - A username like whale_alert
-    - The special keyword "ALL" to monitor all CRYPTO_ACCOUNTS
+    The source.url can be:
+      - A Twitter profile URL: https://x.com/whale_alert
+      - A plain username: whale_alert  or  @whale_alert
+      - The special keyword "ALL" — monitors every active Twitter source
+        in the database (refreshed from DB every 5 minutes).
 
     Returns list of newly created NewsArticle objects.
     """
@@ -301,41 +354,40 @@ def scrape_twitter_source(source: Source) -> list[NewsArticle]:
     headers = _get_headers()
     created_articles = []
 
-    # Determine which accounts to scrape
-    url = source.url.strip().rstrip("/")
+    # ── Determine which accounts to scrape ──────────────────
+    raw_url = (source.url or "").strip().rstrip("/")
 
-    if url.upper() == "ALL":
-        # Monitor all configured crypto accounts
-        accounts_to_check = dict(
-            list(CRYPTO_ACCOUNTS.items())[:MAX_ACCOUNTS_PER_CYCLE]
-        )
-    elif "x.com/" in url or "twitter.com/" in url:
-        # Single account from URL
-        username = url.split("/")[-1].lstrip("@")
-        display_name = CRYPTO_ACCOUNTS.get(username, username)
-        accounts_to_check = {username: display_name}
+    if raw_url.upper() == "ALL":
+        # Read all active Twitter sources from DB (cached, refreshes every 5 min)
+        all_accounts = _get_active_accounts()
+        accounts_to_check = dict(list(all_accounts.items())[:MAX_ACCOUNTS_PER_CYCLE])
+        if not accounts_to_check:
+            logger.warning("Twitter ALL source: no active Twitter sources found in DB")
+            source.last_fetched_at = timezone.now()
+            source.save(update_fields=["last_fetched_at"])
+            return []
     else:
-        # Assume it's a plain username
-        username = url.lstrip("@")
-        display_name = CRYPTO_ACCOUNTS.get(username, username)
-        accounts_to_check = {username: display_name}
+        # Single account — extract username from URL or plain text
+        username = extract_twitter_username(raw_url)
+        if not username:
+            logger.warning("Twitter source '%s' has no parseable username", source.name)
+            return []
+        accounts_to_check = {username: source.name or username}
 
-    # Calculate since_time — only fetch tweets since last fetch
+    # ── Calculate since_time ─────────────────────────────────
     if source.last_fetched_at:
         since_time = source.last_fetched_at.strftime("%Y-%m-%dT%H:%M:%SZ")
     else:
-        # First run — only get tweets from last 30 minutes
         since_time = (
             datetime.now(dt_tz.utc) - timedelta(minutes=30)
         ).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     logger.info(
-        "Twitter: checking %d accounts since %s",
+        "Twitter: checking %d account(s) since %s",
         len(accounts_to_check), since_time,
     )
 
     for username, display_name in accounts_to_check.items():
-        # Get user ID
         user_id = _get_user_id(username, headers)
         if not user_id:
             time.sleep(DELAY_BETWEEN_REQUESTS)
@@ -343,15 +395,11 @@ def scrape_twitter_source(source: Source) -> list[NewsArticle]:
 
         time.sleep(DELAY_BETWEEN_REQUESTS)
 
-        # Get tweets
         tweets = _get_user_tweets(user_id, username, headers, since_time)
         if not tweets:
             continue
 
-        logger.info(
-            "Twitter @%s: found %d tweets",
-            username, len(tweets),
-        )
+        logger.info("Twitter @%s: found %d tweet(s)", username, len(tweets))
 
         for tweet in tweets:
             article = _tweet_to_article(tweet, source, display_name)
@@ -365,7 +413,7 @@ def scrape_twitter_source(source: Source) -> list[NewsArticle]:
     source.save(update_fields=["last_fetched_at"])
 
     logger.info(
-        "Twitter fetch complete: %d new articles from %d accounts",
+        "Twitter fetch complete: %d new article(s) from %d account(s)",
         len(created_articles), len(accounts_to_check),
     )
 
