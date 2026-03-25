@@ -29,6 +29,12 @@ class NewsConfig(AppConfig):
         except Exception as e:
             print(f"[CryptoTimes] Scheduler failed: {e}")
 
+        try:
+            from news.scrapers.twitter_stream import start_stream
+            start_stream()
+        except Exception as e:
+            print(f"[CryptoTimes] Twitter stream failed: {e}")
+
     def _auto_seed_sources(self):
         from news.models import Source
         from news.sources_list import STARTER_SOURCES

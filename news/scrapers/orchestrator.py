@@ -71,6 +71,10 @@ def fetch_all_sources():
                 logger.error("Whale monitor error: %s", e)
             continue
 
+        # ── Skip Twitter sources — handled by Filtered Stream ──
+        if source.type == SourceType.TWITTER:
+            continue
+
         # ── Handle regular sources ──────────────────────────
         scraper = SCRAPER_MAP.get(source.type)
         if not scraper:
