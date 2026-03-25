@@ -69,7 +69,7 @@ def _load_usernames_from_db() -> set[str]:
     """Return lowercase usernames of all active Twitter sources."""
     from news.models import Source
     usernames: set[str] = set()
-    for src in Source.objects.filter(source_type="twitter", is_active=True):
+    for src in Source.objects.filter(type="twitter", is_active=True):
         raw = (src.url or "").strip()
         if raw.upper() == "ALL":
             continue
@@ -239,7 +239,7 @@ def _process_tweet(tweet_data: dict, includes: dict):
     # Find the matching Source row
     source = None
     username_lower = username.lower()
-    for src in Source.objects.filter(source_type="twitter", is_active=True):
+    for src in Source.objects.filter(type="twitter", is_active=True):
         raw = (src.url or "").strip()
         if raw.upper() == "ALL":
             continue
