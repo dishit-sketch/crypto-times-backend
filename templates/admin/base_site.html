@@ -206,7 +206,8 @@
 
     function getStyle(article, isBreaking) {
         if (isBreaking) return BREAKING_STYLE;
-        return SOURCE_STYLES[article.source_type] || { color: '#f7931a', label: '📰 NEW ARTICLE', typeLabel: '' };
+        var srcType = article.source_type || article.sourceType || "";
+        return SOURCE_STYLES[srcType] || { color: '#f7931a', label: '📰 NEW ARTICLE', typeLabel: '' };
     }
 
     // ── Toast Notification ─────────────────────────────────
@@ -214,10 +215,11 @@
         var container = document.getElementById('ct-notifications');
         if (!container) return;
 
+        var srcType = article.source_type || article.sourceType || "";
         var style = getStyle(article, isBreaking);
         var color = style.color;
         var typeLabel = isBreaking
-            ? (SOURCE_STYLES[article.source_type] ? SOURCE_STYLES[article.source_type].typeLabel : '')
+            ? (SOURCE_STYLES[srcType] ? SOURCE_STYLES[srcType].typeLabel : '')
             : (style.typeLabel || '');
 
         var image = (article.images && article.images.length > 0) ? article.images[0] : '';
@@ -273,7 +275,7 @@
         // Browser notification — click also redirects
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
-                var srcStyle = SOURCE_STYLES[article.source_type];
+                var srcStyle = SOURCE_STYLES[srcType];
                 var typePrefix = isBreaking
                     ? '🚨 BREAKING'
                     : (srcStyle ? srcStyle.icon + ' ' + srcStyle.typeLabel : style.label);
