@@ -197,10 +197,10 @@
 
     // ── Source-type style map ──────────────────────────────
     var SOURCE_STYLES = {
-        twitter: { color: '#1DA1F2', label: '𝕏 FROM X',       typeLabel: 'X' },
-        rss:     { color: '#ee802f', label: '📡 FROM RSS',      typeLabel: 'RSS' },
-        website: { color: '#f7931a', label: '🌐 FROM WEB',      typeLabel: 'Website' },
-        whale:   { color: '#00d395', label: '🐋 WHALE ALERT',   typeLabel: 'Whale' },
+        twitter: { color: '#1DA1F2', label: '𝕏 FROM X',       typeLabel: 'X',       icon: '𝕏' },
+        rss:     { color: '#ee802f', label: '📡 FROM RSS',      typeLabel: 'RSS',     icon: '📡' },
+        website: { color: '#f7931a', label: '🌐 FROM WEB',      typeLabel: 'Website', icon: '🌐' },
+        whale:   { color: '#00d395', label: '🐋 WHALE ALERT',   typeLabel: 'Whale',   icon: '🐋' },
     };
     var BREAKING_STYLE = { color: '#ff4757', label: '🚨 BREAKING' };
 
@@ -273,9 +273,14 @@
         // Browser notification — click also redirects
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
+                var srcStyle = SOURCE_STYLES[article.source_type];
+                var typePrefix = isBreaking
+                    ? '🚨 BREAKING'
+                    : (srcStyle ? srcStyle.icon + ' ' + srcStyle.typeLabel : style.label);
+                var notifTitle = typePrefix + ' | ' + (article.title || 'New Article');
                 var notif = new Notification(
-                    isBreaking ? '🚨 BREAKING: ' + article.title : style.label + ': ' + article.title,
-                    { body: metaText, icon: image || '' }
+                    notifTitle,
+                    { body: 'Source: ' + metaText, icon: image || '' }
                 );
                 notif.onclick = function() {
                     window.focus();
