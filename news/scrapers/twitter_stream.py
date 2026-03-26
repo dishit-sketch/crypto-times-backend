@@ -83,29 +83,51 @@ def _load_usernames_from_db() -> set[str]:
 
 def _build_rules(usernames: set[str]) -> list[str]:
     """
-    Pack usernames into `from:u1 OR from:u2 ...` rule strings,
-    each at most 512 characters (X Basic plan limit).
+    Build filtered stream rules combining account filters with crypto keyword
+    filters, so Twitter only delivers tweets that match BOTH a monitored account
+    AND a crypto-related term. Each rule stays within 512 characters (X Basic
+    plan limit). Max 5 rules allowed on the Basic plan.
+
+    Rule format: (from:u1 OR from:u2 OR ...) (bitcoin OR btc OR ...)
     """
     if not usernames:
         return []
 
+    CRYPTO_SUFFIX = (
+        " (bitcoin OR btc OR ethereum OR eth OR crypto OR blockchain OR defi"
+        " OR nft OR token OR exchange OR listing OR hack OR whale OR stablecoin"
+        " OR usdt OR usdc OR sec OR solana OR xrp OR cardano OR dogecoin OR bnb"
+        " OR price OR market OR trading OR breaking OR alert OR transfer"
+        " OR deposit OR withdraw)"
+    )
+    MAX_RULES = 5
+    MAX_LEN = 512
+    # Rule = "(content)" + CRYPTO_SUFFIX, so content must fit in:
+    max_content = MAX_LEN - 2 - len(CRYPTO_SUFFIX)  # 2 = len("()")
+
     rules: list[str] = []
     parts: list[str] = []
-    length = 0
+    content_len = 0
 
     for username in sorted(usernames):
+        if len(rules) >= MAX_RULES:
+            logger.warning(
+                "Twitter Basic plan rule limit (%d) reached — some accounts will not be monitored",
+                MAX_RULES,
+            )
+            break
         part = f"from:{username}"
         added = len(part) + (4 if parts else 0)  # 4 = len(" OR ")
-        if length + added > 512:
-            rules.append(" OR ".join(parts))
+        if content_len + added > max_content:
+            rules.append(f"({' OR '.join(parts)}){CRYPTO_SUFFIX}")
             parts = [part]
-            length = len(part)
+            content_len = len(part)
         else:
             parts.append(part)
-            length += added
+            content_len += added
 
-    if parts:
-        rules.append(" OR ".join(parts))
+    if parts and len(rules) < MAX_RULES:
+        rules.append(f"({' OR '.join(parts)}){CRYPTO_SUFFIX}")
 
     return rules
 
