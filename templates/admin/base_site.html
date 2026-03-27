@@ -283,6 +283,7 @@
         // Browser notification — click also redirects
         if ('Notification' in window && Notification.permission === 'granted') {
             try {
+                console.log('[CryptoTimes] Article ID:', article.id, 'Full article:', JSON.stringify(article));
                 var srcStyle = SOURCE_STYLES[srcType];
                 var typePrefix = isBreaking
                     ? '🚨 BREAKING'
