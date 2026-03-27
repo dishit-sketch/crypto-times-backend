@@ -210,6 +210,14 @@
         return SOURCE_STYLES[srcType] || { color: '#f7931a', label: '📰 NEW ARTICLE', typeLabel: '' };
     }
 
+    // ── Article URL helper ─────────────────────────────────
+    function articleUrl(id) {
+        if (id && typeof id === 'string' && id.trim().length > 0) {
+            return '/admin/news/newsarticle/' + id.trim() + '/change/';
+        }
+        return '/admin/news/newsarticle/';
+    }
+
     // ── Toast Notification ─────────────────────────────────
     function showToast(article, isBreaking) {
         var container = document.getElementById('ct-notifications');
@@ -259,7 +267,7 @@
 
         // Click toast → redirect to that article's detail page
         toast.onclick = function() {
-            window.location.href = '/admin/news/newsarticle/' + article.id + '/change/';
+            window.location.href = articleUrl(article.id);
         };
 
         container.appendChild(toast);
@@ -286,7 +294,7 @@
                 );
                 notif.onclick = function() {
                     window.focus();
-                    window.location.href = '/admin/news/newsarticle/' + article.id + '/change/';
+                    window.location.href = articleUrl(article.id);
                 };
             } catch(e) {}
         }
@@ -302,7 +310,7 @@
 
         // Click banner → redirect to article
         headline.onclick = function() {
-            window.location.href = '/admin/news/newsarticle/' + article.id + '/change/';
+            window.location.href = articleUrl(article.id);
         };
 
         var flashes = 0;
