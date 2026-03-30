@@ -71,6 +71,7 @@
     color: #e8eaed; line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -235,7 +236,7 @@
             ? '<img class="ct-toast-img" src="' + image + '" alt="">'
             : '<div class="ct-toast-img" style="display:flex;align-items:center;justify-content:center;color:#555;font-size:20px;">📰</div>';
 
-        var sourceName = article.source_name || '';
+        var sourceName = article.sourceName || article.source_name || '';
         var metaText = typeLabel
             ? sourceName + ' \u2014 ' + typeLabel + ' \u00b7 Just now'
             : sourceName + ' \u00b7 Just now';
